@@ -1,0 +1,5 @@
+lego.js
+node_modules
+log/app.log
+.env
+test.js
