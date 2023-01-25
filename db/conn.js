@@ -1,13 +1,13 @@
-const db = require('./knexfile');
+const db = require('./config');
 
 const parseResFromDB = (res) => {
     return Object.values(JSON.parse(JSON.stringify(res)));
 };
 
-const getAllUsers = async () => {
-    const users = await db('user')
-        .select('name');
-    console.log(users);
+const getAllEmployees = async () => {
+    const employees = await db('employee')
+        .select('id', 'name', 'surname');
+    return parseResFromDB(employees);
 };
 
 const getAllControllers = async () => {
@@ -56,7 +56,7 @@ const getAllSensors = async () => {
 };
 
 // (async () => {
-//     await getAllUsers();
+//     console.log(await getAllEmployees());
 // })();
 
-module.exports = { getAllControllers, getAllCounters, getAllPumps, getAllRegulators, getAllSensors };
+module.exports = { getAllEmployees, getAllControllers, getAllCounters, getAllPumps, getAllRegulators, getAllSensors };
