@@ -7,7 +7,7 @@ const user = require('../user');
 const { KEYBOARD_TEXT, TEXT } = require('../constant/TextEnum');
 const keyboard = require('../keyboard');
 const { Scenes } = require('telegraf');
-const SCENE_ID = require('./SceneIdEnum');
+const SCENE_ID = require('../constant/SceneIdEnum');
 const createAssemblyObject = require('./createAssemblyObject');
 
 const editModelKeyboard = (ctx) => {
@@ -83,6 +83,7 @@ const materialAssemblyScene = new Scenes.WizardScene(
     return ctx.wizard.steps[ctx.wizard.cursor](ctx); // Manually trigger the listener with the current ctx
 }).action('saveToDB', async (ctx) => {
     ctx.answerCbQuery('Материал успешно записан на работникa и сохранён в базу данных', { show_alert: true });
+    console.log(ctx.wizard.state.assembly);
     await ctx.scene.leave();
     ctx.session.isSceneRunning = false;
 });
