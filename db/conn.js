@@ -12,7 +12,7 @@ const getAllEmployees = async () => {
 
 const getAllControllers = async () => {
     const controllers = await db
-        .select('designation.name', 'controller.model')
+        .select('controller.id', 'designation.name', 'controller.model')
         .from('controller')
         .join('designation', 'designation_id', '=', 'designation.id');
 
@@ -21,7 +21,7 @@ const getAllControllers = async () => {
 
 const getAllCounters = async () => {
     const counters = await db
-        .select('designation.name', 'counter.model')
+        .select('counter.id', 'designation.name', 'counter.model')
         .from('counter')
         .join('designation', 'designation_id', '=', 'designation.id');
 
@@ -30,7 +30,7 @@ const getAllCounters = async () => {
 
 const getAllPumps = async () => {
     const pumps = await db
-        .select('designation.name', 'pump.model')
+        .select('designation.id', 'designation.name', 'pump.model')
         .from('pump')
         .join('designation', 'designation_id', '=', 'designation.id');
 
@@ -39,7 +39,7 @@ const getAllPumps = async () => {
 
 const getAllRegulators = async () => {
     const regulators = await db
-        .select('designation.name', 'regulator.model')
+        .select('regulator.id', 'designation.name', 'regulator.model')
         .from('regulator')
         .join('designation', 'designation_id', '=', 'designation.id');
 
@@ -48,15 +48,25 @@ const getAllRegulators = async () => {
 
 const getAllSensors = async () => {
     const sensors = await db
-        .select('designation.name', 'sensor.model')
+        .select('sensor.id', 'designation.name', 'sensor.model')
         .from('sensor')
         .join('designation', 'designation_id', '=', 'designation.id');
 
     return parseResFromDB(sensors);
 };
 
+// const mapAssemblyObjectTo
+
+const saveAssemblyToDB = async (assemblyObj) => {
+    const arr = Object.entries(assemblyObj);
+    for (let i = 1; i < arr.length; i++) {
+        const curr = arr[i];
+        console.log(curr);
+    }
+};
+
 // (async () => {
 //     console.log(await getAllEmployees());
 // })();
 
-module.exports = { getAllEmployees, getAllControllers, getAllCounters, getAllPumps, getAllRegulators, getAllSensors };
+module.exports = { getAllEmployees, getAllControllers, getAllCounters, getAllPumps, getAllRegulators, getAllSensors, saveAssemblyToDB };

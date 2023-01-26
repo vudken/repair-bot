@@ -1,19 +1,35 @@
+'use strict';
+
 const { Markup } = require('telegraf');
 const MATERIAL_CATEGORY = require('./constant/MaterialCategoryEnum');
 const { TEXT } = require('./constant/TextEnum');
+const conn = require('./db/conn');
 
-const getEmployeeKeyboard = () => {
+const createKeyboard = (dataArr) => {
+    let keyboard = [];
+    dataArr.forEach(data => {
+        keyboard.push([
+            Markup.button.callback(data.btnTxt, data.cbStr)
+        ]);
+    });
+
     return {
         parse_mode: 'HTML',
-        ...Markup.inlineKeyboard([
-            [Markup.button.callback('Тролли', 'user_id_1')],
-            [Markup.button.callback('Алкаши', 'user_id_2')],
-            [Markup.button.callback('Кирилл и Мифодий', 'user_id_3')],
-        ])
+        ...Markup.inlineKeyboard(keyboard)
     };
 };
 
-const getMaterialKeyboard = () => {
+const getEmployeeKeyboard = async () => {
+    let employees = await conn.getAllEmployees();
+    employees = employees.map(employee => employee = {
+        btnTxt: `${employee.name} ${employee.surname}`,
+        cbStr: `employee_id_${employee.id}`
+    });
+
+    return createKeyboard(employees);
+};
+
+const getCategoryKeyboard = () => {
     return {
         parse_mode: 'HTML',
         ...Markup.inlineKeyboard([
@@ -27,7 +43,7 @@ const getMaterialKeyboard = () => {
     };
 };
 
-const getKeyboardFromGivenObj = (givenObj) => {
+const getMaterialKeyboardByCategory = (givenObj) => {
     const models = Object.keys(givenObj);
     const keyboard = [];
 
@@ -49,4 +65,4 @@ const getKeyboardFromGivenObj = (givenObj) => {
     };
 };
 
-module.exports = { getEmployeeKeyboard, getMaterialKeyboard, getKeyboardFromGivenData: getKeyboardFromGivenObj };
+module.exports = { getEmployeeKeyboard, getCategoryKeyboard, getMaterialKeyboardByCategory };

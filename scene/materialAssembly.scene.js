@@ -1,57 +1,39 @@
 'use strict';
 
 require('dotenv').config();
-
-const ROLE = require('../constant/RoleEnum');
-const user = require('../user');
-const { KEYBOARD_TEXT, TEXT } = require('../constant/TextEnum');
-const keyboard = require('../keyboard');
-const { Scenes } = require('telegraf');
+const { Scenes: { WizardScene } } = require('telegraf');
+const { KEYBOARD_TEXT } = require('../constant/TextEnum');
 const SCENE_ID = require('../constant/SceneIdEnum');
-const createAssemblyObject = require('./createAssemblyObject');
+const keyboard = require('../keyboard');
 
 const editModelKeyboard = (ctx) => {
     return ctx.editMessageText(
         KEYBOARD_TEXT.CHOOSE_MODEL_AND_QUANTITE,
-        keyboard.getKeyboardFromGivenData(ctx.wizard.state.assembly[`${ctx.wizard.state.category}`])
+        keyboard.getMaterialKeyboardByCategory(ctx.wizard.state.assembly[`${ctx.wizard.state.category}`])
     );
 };
 
-const materialAssemblyScene = new Scenes.WizardScene(
-    SCENE_ID.ENTRY_SCENE, // first argument is Scene_ID, same as for BaseScene
-    async (ctx) => {
-        (user.isBoss(ctx.message.chat.id)) ? ctx.role = ROLE.BOSS : ctx.role = ROLE.EMPLOYEE;
-        if (ctx.role === ROLE.BOSS) {
-            let assembly = await createAssemblyObject();
-            ctx.wizard.state.assembly = assembly;
-            ctx.reply(
-                KEYBOARD_TEXT.CHOOSE_EMPLOYEE,
-                keyboard.getEmployeeKeyboard()
-            );
-        } else {
-            ctx.reply('You are not a boss');
-        }
-        return ctx.wizard.next();
-    },
+const materialAssemblyWizard = new WizardScene(
+    SCENE_ID.MATERIAL_SCENE,
     (ctx) => {
-        let assembly = ctx.wizard.state.assembly;
-        assembly = Object.assign({
-            'userId': ctx.update.callback_query.data
-        }, assembly);
-
         ctx.editMessageText(
             KEYBOARD_TEXT.CHOOSE_CATEGORY,
-            keyboard.getMaterialKeyboard()
+            keyboard.getCategoryKeyboard()
         );
 
         return ctx.wizard.next();
     },
     (ctx) => {
-        ctx.answerCbQuery();
         ctx.wizard.state.category = ctx.update.callback_query.data;
         editModelKeyboard(ctx);
-    }
-).action(/order:([^]+):([^]+)/, async (ctx) => {
+        return ctx.wizard.next();
+    },
+    (ctx) => {
+        console.log(ctx.update.callback_query.data);
+    },
+);
+
+materialAssemblyWizard.action(/order:([^]+):([^]+)/, async (ctx) => {
     ctx.answerCbQuery();
     const action = ctx.match[2];
     if (action == TEXT.INFO) return;
@@ -78,14 +60,12 @@ const materialAssemblyScene = new Scenes.WizardScene(
         editModelKeyboard(ctx);
     }
 }).action('wizardBack', (ctx) => {
-    ctx.answerCbQuery();
     ctx.wizard.back();  // Set the listener to the previous function
     return ctx.wizard.steps[ctx.wizard.cursor](ctx); // Manually trigger the listener with the current ctx
 }).action('saveToDB', async (ctx) => {
     ctx.answerCbQuery('Материал успешно записан на работникa и сохранён в базу данных', { show_alert: true });
-    console.log(ctx.wizard.state.assembly);
     await ctx.scene.leave();
-    ctx.session.isSceneRunning = false;
+    await saveAssemblyToDB(ctx.wizard.state.assembly);
 });
 
-module.exports = materialAssemblyScene;;
+module.exports = materialAssemblyWizard;

@@ -9,7 +9,7 @@ const createAssemblyObject = async () => {
     for (const category of categories) {
         let materialArr = await factory.create(category);
         let tmpObj = {};
-
+        
         materialArr.forEach(material => {
             tmpObj[material.model] = {
                 'name': material.name,
