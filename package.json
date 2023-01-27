@@ -24,8 +24,7 @@
     "ext": "js",
     "ignore": [
       "*.test.ts",
-      "*.test.js",
-      "./db"
+      "*.test.js"
     ],
     "delay": "2"
   }

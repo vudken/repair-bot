@@ -65,4 +65,8 @@ const getMaterialKeyboardByCategory = (givenObj) => {
     };
 };
 
-module.exports = { getEmployeeKeyboard, getCategoryKeyboard, getMaterialKeyboardByCategory };
+module.exports = {
+    getEmployeeKeyboard,
+    getCategoryKeyboard,
+    getMaterialKeyboardByCategory
+};

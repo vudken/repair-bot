@@ -11,4 +11,7 @@ const KEYBOARD_TEXT = Object.freeze({
 	CHOOSE_MODEL_AND_QUANTITE: '<b>Выберите модель и кол-во:</b>',
 });
 
-module.exports = { TEXT, KEYBOARD_TEXT };
+module.exports = {
+	TEXT,
+	KEYBOARD_TEXT
+};

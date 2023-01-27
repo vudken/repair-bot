@@ -6,13 +6,11 @@ const { KEYBOARD_TEXT } = require('../constant/TextEnum');
 const SCENE_ID = require('../constant/SceneIdEnum');
 const logger = require('../logger');
 const keyboard = require('../keyboard');
-const createAssemblyObject = require('./createAssemblyObject');
+const createAssemblyObject = require('../draft/createAssemblyObject');
 
 const chooseEmployeeWizard = new WizardScene(
     SCENE_ID.CHOOSE_EMPLOYEE_SCENE,
     async (ctx) => {
-        console.log(ctx.wizard.state)
-
         ctx.reply(
             KEYBOARD_TEXT.CHOOSE_EMPLOYEE,
             await keyboard.getEmployeeKeyboard()
@@ -21,8 +19,8 @@ const chooseEmployeeWizard = new WizardScene(
         return ctx.wizard.next();
     },
     async (ctx) => {
-        logger.info('Creating assembly object');
-        const assembly = await createAssemblyObject();
+        let assembly = await createAssemblyObject();
+        assembly.userId = ctx.update.callback_query.data;
         ctx.wizard.state.assembly = assembly;
         return ctx.scene.enter(SCENE_ID.MATERIAL_SCENE, ctx.wizard.state);
     },
