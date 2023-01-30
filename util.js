@@ -1,10 +1,13 @@
 'use strict';
 
-const isAssemblyObjectEmpty = (assemblyObj) => {
+const { TEXT } = require("./constant/TextEnum");
+const { category } = require("./logger");
+
+const isAssemblyEmpty = (assembly) => {
     let isEmpty = true;
-    Object.entries(assemblyObj).forEach(arr => {
-        Object.values(arr[1]).forEach(unit => {
-            if (unit.quantity > 0) isEmpty = false;
+    assembly.equipment.forEach((element) => {
+        element.items.forEach((item) => {
+            if (item.quantity > 0) isEmpty = false;
         });
     });
 
@@ -15,4 +18,39 @@ const correctModelName = (modelName) => {
     return modelName.replace(/\s|\(\d+\)/g, '');
 };
 
-module.exports = { isAssemblyObjectEmpty, correctModelName };
+const getItemsFromAssemblyByCategory = (assembly, category) => {
+    return assembly.equipment.find((obj) => obj.category === category).items;
+};
+
+const updateQuantity = (items, model, quantity) => {
+    const item = items.find((i) => i.model === model);
+    if (item) {
+        item.quantity = quantity;
+    } else {
+        throw new Error(TEXT.UNDEFINED);
+    }
+};
+
+const updateModel = (items, model, quantity) => {
+    const item = items.find((i) => i.model === model);
+    model = correctModelName(model);
+
+    if (quantity === 0) {
+        item.model = model;
+        return;
+    }
+
+    if (item) {
+        item.model = `${model} (${quantity})`;
+    } else {
+        throw new Error(TEXT.UNDEFINED);
+    }
+};
+
+module.exports = {
+    isAssemblyEmpty,
+    correctModelName,
+    getItemsFromAssemblyByCategory,
+    updateQuantity,
+    updateModel,
+};

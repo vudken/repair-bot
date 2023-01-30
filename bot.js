@@ -9,9 +9,9 @@ const logger = require('./logger');
 const SCENE_ID = require('./constant/SceneIdEnum');
 const entryWizard = require('./scene/entry.scene');
 const chooseEmployeeWizard = require('./scene/chooseEmployee.scene');
-const materialAssemblyWizard = require('./scene/materialAssembly.scene');
+const equipmentAssemblyWizard = require('./scene/equipmentAssembly.scene');
 
-const stage = new Stage([entryWizard, chooseEmployeeWizard, materialAssemblyWizard]);
+const stage = new Stage([entryWizard, chooseEmployeeWizard, equipmentAssemblyWizard]);
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 process.on('uncaughtException', (err) => {

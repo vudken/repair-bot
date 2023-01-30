@@ -1,26 +1,21 @@
-const MATERIAL_CATEGORY = require('../constant/MaterialCategoryEnum');
-const MaterialFactory = require('../MaterialFactory');
+const EQUIMPMENT_CATEGORY = require('../constant/EquipmentCategoryEnum');
+const EquipmentFactory = require('../EquipmentFactory');
 
 const createAssemblyObject = async () => {
-    const factory = new MaterialFactory(),
-        categories = Object.values(MATERIAL_CATEGORY),
+    const factory = new EquipmentFactory(),
+        categories = Object.values(EQUIMPMENT_CATEGORY),
         assembly = {
-            'userId': undefined
+            'employeeId': undefined,
+            'equipment': []
         };
 
     for (const category of categories) {
-        let materialArr = await factory.create(category);
-        let tmpObj = {};
-
-        materialArr.forEach(material => {
-            tmpObj[material.model] = {
-                'id': material.id,
-                'name': material.name,
-                'quantity': 0
-            };
+        let equipment = await factory.create(category);
+        equipment.map(el => el['quantity'] = 0);
+        assembly.equipment.push({
+            category: category,
+            items: equipment
         });
-
-        assembly[category] = tmpObj;
     }
 
     return assembly;

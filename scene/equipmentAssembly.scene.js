@@ -3,27 +3,30 @@
 require('dotenv').config();
 const { Composer, Scenes: { WizardScene } } = require('telegraf');
 const { KEYBOARD_TEXT, TEXT } = require('../constant/TextEnum');
-const MATERIAL_CATEGORY = require('../constant/MaterialCategoryEnum');
+const EQUIMPMENT_CATEGORY = require('../constant/EquipmentCategoryEnum');
 const SCENE_ID = require('../constant/SceneIdEnum');
 const keyboard = require('../keyboard');
+const { isAssemblyEmpty, correctModelName, getItemsFromAssemblyByCategory, updateQuantity, updateModel} = require('../util');
 const { saveAssemblyToDB } = require('../db/conn');
-const { isAssemblyObjectEmpty, correctModelName } = require('../util');
 
 const editModelKeyboard = async (ctx) => {
     return ctx.editMessageText(
         KEYBOARD_TEXT.CHOOSE_MODEL_AND_QUANTITE,
-        keyboard.getMaterialKeyboardByCategory(ctx.wizard.state.assembly[`${ctx.wizard.state.category}`])
+        keyboard.getEquipmentKeyboardByCategory(
+            ctx.wizard.state.assembly,
+            ctx.wizard.state.category
+        )
     );
 };
 
 const chooseCategoryHandler = new Composer();
-chooseCategoryHandler.action(Object.values(MATERIAL_CATEGORY), ctx => {
+chooseCategoryHandler.action(Object.values(EQUIMPMENT_CATEGORY), ctx => {
     ctx.wizard.state.category = ctx.update.callback_query.data;
     editModelKeyboard(ctx);
     return ctx.wizard.next();
 });
 chooseCategoryHandler.action('saveToDB', async (ctx) => {
-    if (isAssemblyObjectEmpty(ctx.wizard.state.assembly)) {
+    if (isAssemblyEmpty(ctx.wizard.state.assembly)) {
         ctx.answerCbQuery('Вы ничего не добавили в сборку материала', { show_alert: true });
         return;
     };
@@ -38,28 +41,24 @@ chooseModelAndQuantiteHandler.action(/order:(.+):(.+)/, async (ctx) => {
     ctx.answerCbQuery();
     const [, modelName, action] = ctx.match;
     if (action === TEXT.INFO) return;
-    const steps = (ctx) => {
-        delete assembly[modelName];
-        editModelKeyboard(ctx);
-    };
 
     const category = ctx.wizard.state.category;
-    const assembly = ctx.wizard.state.assembly[category];
+    const assembly = ctx.wizard.state.assembly;
+    const items = getItemsFromAssemblyByCategory(assembly, category);
     const correctedModelName = correctModelName(modelName);
 
-    let quantity = assembly[modelName].quantity;
-
+    let quantity = items.find(i => i.model === modelName).quantity;
     if (action == TEXT.INCREMENT) quantity++;
     if (action == TEXT.DICREMENT && quantity > 0) quantity--;
-    assembly[modelName].quantity = quantity;
+    updateQuantity(items, modelName, quantity);
 
     if (quantity > 0) {
-        assembly[`${correctedModelName} (${quantity})`] = assembly[modelName];
-        steps(ctx);
+        updateModel(items, modelName, quantity);
+        editModelKeyboard(ctx);
     }
     if (quantity == 0 && correctedModelName != modelName) {
-        assembly[correctedModelName] = assembly[modelName];
-        steps(ctx);
+        updateModel(items, modelName, quantity);
+        editModelKeyboard(ctx);
     }
 });
 chooseModelAndQuantiteHandler.action('wizardBack', ctx => {
@@ -67,7 +66,7 @@ chooseModelAndQuantiteHandler.action('wizardBack', ctx => {
 });
 
 const scene = new WizardScene(
-    SCENE_ID.MATERIAL_SCENE,
+    SCENE_ID.EQUIMPMENT_SCENE,
     chooseCategoryHandler,
     chooseModelAndQuantiteHandler,
 );

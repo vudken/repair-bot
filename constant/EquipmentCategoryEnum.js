@@ -1,4 +1,4 @@
-const MATERIAL_CATEGORY = Object.freeze({
+const EQUIMPMENT_CATEGORY = Object.freeze({
 	CONTROLLER: 'controller',
 	COUNTER: 'counter',
 	PUMP: 'pump',
@@ -6,4 +6,4 @@ const MATERIAL_CATEGORY = Object.freeze({
 	SENSOR: 'sensor',
 });
 
-module.exports = MATERIAL_CATEGORY;
+module.exports = EQUIMPMENT_CATEGORY;
