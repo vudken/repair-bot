@@ -22,8 +22,10 @@ const scene = new WizardScene(
     },
     async (ctx) => {
         let assembly = await createAssemblyObject();
+
         assembly.employeeId = ctx.update.callback_query.data;
         ctx.wizard.state.assembly = assembly;
+
         return ctx.scene.enter(SCENE_ID.EQUIMPMENT_SCENE, ctx.wizard.state);
     },
 );

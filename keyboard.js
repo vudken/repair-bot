@@ -5,7 +5,7 @@ const EQUIMPMENT_CATEGORY = require('./constant/EquipmentCategoryEnum');
 const KEYBOARD_DATA = require('./constant/KeyboardDataEnum');
 const SCENE_ID = require('./constant/SceneIdEnum');
 const TEXT = require('./constant/TextEnum');
-const { getItemsFromAssemblyByCategory } = require('./service/util');
+const { getItemsFromAssemblyByCategory, getCheckMark } = require('./service/util');
 
 const createKeyboard = (dataArr) => {
     let keyboard = [];
@@ -88,17 +88,25 @@ const getEquipmentKeyboard = (assembly, category) => {
     };
 };
 
-const getWhereKeyboard = () => {
+const getWhereKeyboard = (cbData) => {
+    let keyboard = [
+        [Markup.button.callback(TEXT.WHERE.ATTIC, KEYBOARD_DATA.WHERE.ATTIC)],
+        [Markup.button.callback(TEXT.WHERE.STAIRCASE, KEYBOARD_DATA.WHERE.STAIRCASE)],
+        [Markup.button.callback(TEXT.WHERE.FLAT, KEYBOARD_DATA.WHERE.FLAT)],
+        [Markup.button.callback(TEXT.WHERE.BASEMENT, KEYBOARD_DATA.WHERE.BASEMENT)],
+        [Markup.button.callback(TEXT.WHERE.HEATING_STATION, KEYBOARD_DATA.WHERE.HEATING_STATION)],
+        [Markup.button.callback(TEXT.BTN.BACK_BTN, SCENE_ID.CHOOSE_WORK_SCENE)],
+    ];
+
+    if (cbData) {
+        keyboard = keyboard.map(buttton => {
+            console.log(buttton[0]);
+        });
+    }
+
     return {
         parse_mode: 'HTML',
-        ...Markup.inlineKeyboard([
-            [Markup.button.callback(TEXT.WHERE.ATTIC, KEYBOARD_DATA.WHERE.ATTIC)],
-            [Markup.button.callback(TEXT.WHERE.STAIRCASE, KEYBOARD_DATA.WHERE.STAIRCASE)],
-            [Markup.button.callback(TEXT.WHERE.FLAT, KEYBOARD_DATA.WHERE.FLAT)],
-            [Markup.button.callback(TEXT.WHERE.BASEMENT, KEYBOARD_DATA.WHERE.BASEMENT)],
-            [Markup.button.callback(TEXT.WHERE.HEATING_STATION, KEYBOARD_DATA.WHERE.HEATING_STATION)],
-            [Markup.button.callback(TEXT.BTN.BACK_BTN, SCENE_ID.CHOOSE_WORK_SCENE)],
-        ])
+        ...Markup.inlineKeyboard(keyboard)
     };
 };
 
@@ -113,7 +121,7 @@ const getProblemWithKeyboard = () => {
     };
 };
 
-const getCauseKeyboard = (where, problemWith) => {
+const getCauseKeyboard = (where, problemWith, isClicked = false, cbData = null) => {
     let keyboard = [];
 
     switch (where) {
@@ -178,9 +186,17 @@ const getCauseKeyboard = (where, problemWith) => {
             break;
     }
 
-    keyboard.push([
-        Markup.button.callback(TEXT.BTN.BACK_BTN, KEYBOARD_DATA.OTHER.BACK_BTN)
-    ]);
+    keyboard.push([Markup.button.callback(TEXT.BTN.CONTINUE, KEYBOARD_DATA.OTHER.CONTINUE_BTN)]);
+    keyboard.push([Markup.button.callback(TEXT.BTN.BACK_BTN, KEYBOARD_DATA.OTHER.BACK_BTN)]);
+
+    if (isClicked) {
+        keyboard = keyboard.map((btnArr) => {
+            const btn = btnArr[0];
+            return (btn.callback_data === cbData)
+                ? [{ ...btn, text: `${btn.text}  ${getCheckMark()}` }]
+                : btnArr;
+        });
+    }
 
     return {
         parse_mode: 'HTML',

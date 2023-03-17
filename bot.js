@@ -39,8 +39,8 @@ bot.start((ctx) => {
 });
 bot.on(['photo', 'media_group'], async (ctx) => {
     const mediaGroup = ctx.mediaGroup;
-    if (ctx.wizard.state.work && ctx.wizard.state.work.cause) {
-        const msg = ctx.update.message, photos = ctx.wizard.state.work.photos;
+    if (ctx.wizard.state.job && ctx.wizard.state.job.cause.length > 0) {
+        const msg = ctx.update.message, photos = ctx.wizard.state.job.photos;
 
         if (mediaGroup) {
             for (const msg of mediaGroup) {
@@ -50,7 +50,7 @@ bot.on(['photo', 'media_group'], async (ctx) => {
             photos.push({ path: await getPhotoPath(msg.photo) });
         }
 
-        await ctx.reply(
+        return await ctx.reply(
             `<b>Адрес: ${ctx.wizard.state.work.address}\nКол-во добавленных фото: ${photos.length}\n\nМожете прикрепить ещё фото. Если все фото добавлены, можете завершить работу или добавить ещё место выполнения работы (например, чердак, подвал и т.п.).</b>`,
             keyboard.getConfirmationKeyboard()
         );
@@ -63,7 +63,7 @@ bot.on(['photo', 'media_group'], async (ctx) => {
             ctx.deleteMessage();
         }
 
-        ctx.reply(
+        return ctx.reply(
             TEXT.INFO.PHOTO_WARNING,
             keyboard.getPhotoWarningKeyboard()
         );
@@ -74,9 +74,9 @@ bot.hears(['id', 'Id'], (ctx) => {
 });
 bot.action(KEYBOARD_DATA.OTHER.UNDERSTAND, (ctx) => ctx.deleteMessage());
 bot.action(SCENE_ID.COMPLETE_WORK_SCENE, (ctx) => {
-    console.log(ctx.wizard.state.work)
+    // console.log(ctx.wizard.state.work)
     ctx.deleteMessage();
-    ctx.scene.enter(SCENE_ID.COMPLETE_WORK_SCENE, ctx.wizard.state);
+    return ctx.scene.enter(SCENE_ID.COMPLETE_WORK_SCENE, ctx.wizard.state);
 });
 
 module.exports = bot;

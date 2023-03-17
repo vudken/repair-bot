@@ -3,6 +3,7 @@
 const TEXT = require("../constant/TextEnum");
 const { Composer } = require('telegraf');
 const KEYBOARD_DATA = require('../constant/KeyboardDataEnum');
+const emoji = require('node-emoji')
 
 const isAssemblyEmpty = (assembly) => {
     let isEmpty = true;
@@ -69,6 +70,10 @@ const updateWorkById = (works, id, updatedWork) => {
     return works.map((work) => (work.id === id) ? updatedWork : work);
 };
 
+const getCheckMark = () => {
+    return emoji.get('white_check_mark');
+}
+
 module.exports = {
     isAssemblyEmpty,
     correctModelName,
@@ -78,5 +83,6 @@ module.exports = {
     handleBackBtn,
     getWorkById,
     getWorkDataById,
-    updateWorkById
+    updateWorkById,
+    getCheckMark
 };

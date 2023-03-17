@@ -14,7 +14,7 @@ const { handleBackBtn } = require('../service/util');
 const editModelKeyboard = async (ctx) => {
     return ctx.editMessageText(
         ТЕХТ.KEYBOARD.CHOOSE_MODEL_AND_QUANTITE,
-        keyboard.getEquipmentKeyboardByCategory(
+        keyboard.getEquipmentKeyboard(
             ctx.wizard.state.assembly,
             ctx.wizard.state.category
         )

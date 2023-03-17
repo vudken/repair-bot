@@ -1,3 +1,5 @@
+const emoji = require('node-emoji');
+
 const WHERE = Object.freeze({
 	ATTIC: 'Чердак',
 	STAIRCASE: 'Лестница (подъезд)',
@@ -53,13 +55,14 @@ const BOT = Object.freeze({
 });
 
 const BTN = Object.freeze({
-	BACK_BTN: 'Назад',
-	UNDERSTAND: 'Я понял',
+	BACK_BTN: `Назад ${emoji.get('arrow_left')}`,
+	CONTINUE: `Продолжить ${emoji.get('arrow_right')}`,
+	UNDERSTAND: `Я понял ${emoji.get('x')}`,
 	COMPLETE: 'Завершить',
-	COMPLETE_WORK: 'Завершить работу',
-	SEND: 'Отправить',
+	COMPLETE_WORK: `Завершить работу ${emoji.get('arrow_right')}`,
+	SEND: `Отправить ${emoji.get('arrow_up')}`,
 	WRITE_ON_WORKER: 'Записать материал на работника',
-	GET_DESCRIPTION: 'Получить описание работы',
+	GET_DESCRIPTION: `Получить описание работы ${emoji.get('arrow_down')}`,
 	ADD_ANOTHER_PLACE: 'Добавить ещё место',
 });
 

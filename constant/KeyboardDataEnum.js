@@ -27,6 +27,7 @@ const CAUSE = Object.freeze({
 const OTHER = Object.freeze({
 	SAVE_TO_DB: 'saveToDB',
 	BACK_BTN: `wizardBack`,
+	CONTINUE_BTN: `continue`,
 	COMPLETE: 'complete',
 	SEND: 'send',
 	OPTIONS_HANDLER: 'optionsHandler',

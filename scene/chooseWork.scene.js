@@ -15,16 +15,23 @@ optionsHandler.action(/workId\d+/, async (ctx) => {
         address = getWorkDataById(works, id, 'address'),
         description = getWorkDataById(works, id, 'description');
 
+    ctx.wizard.state.work = {
+        id: id,
+        address: address,
+        description: description,
+        fixed: [{
+            where: null,
+            problemWith: null,
+            cause: []
+        }],
+    };
+
     ctx.answerCbQuery();
     ctx.editMessageText(
         TEXT.KEYBOARD.CHOOSE_OPTION,
         keyboard.getAddressKeyboard(cbData)
     );
-    ctx.wizard.state.work = {
-        id: id,
-        address: address,
-        description: description
-    };
+
     ctx.wizard.next();
 });
 
@@ -34,7 +41,8 @@ descriptionHandler.action(/workId\d+/, async (ctx) => {
         `${TEXT.KEYBOARD.WORK_DECRIPTION}\n\nАдрес: ${ctx.wizard.state.work.address}\n\nДоп инфо: ${ctx.wizard.state.work.description}`,
         keyboard.getBackKeyboard(),
     );
-    ctx.wizard.next(ctx);
+    
+    return ctx.wizard.next(ctx);
 });
 
 const scene = new WizardScene(
@@ -42,20 +50,17 @@ const scene = new WizardScene(
     optionsHandler,
     descriptionHandler,
 );
-
 scene.use(handleBackBtn());
-
 // scene.action(SCENE_ID.COMPLETE_WORK_SCENE, (ctx) => {
 //     ctx.deleteMessage();
 //     ctx.scene.enter(SCENE_ID.COMPLETE_WORK_SCENE, ctx.wizard.state);
 // });
-
 scene.enter(async (ctx) => {
     const works = await conn.getAllWork();
 
-    const imagePaths = ['/path/to/image1.jpg', '/path/to/image2.jpg', '/path/to/image3.jpg'];
-    const jsonImagePaths = JSON.stringify(imagePaths);
-    console.log(jsonImagePaths)
+    // const imagePaths = ['/path/to/image1.jpg', '/path/to/image2.jpg', '/path/to/image3.jpg'];
+    // const jsonImagePaths = JSON.stringify(imagePaths);
+    // console.log(jsonImagePaths)
 
     ctx.session.works = works;
     ctx.reply(
