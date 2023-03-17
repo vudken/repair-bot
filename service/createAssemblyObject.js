@@ -1,5 +1,5 @@
 const EQUIMPMENT_CATEGORY = require('../constant/EquipmentCategoryEnum');
-const EquipmentFactory = require('../EquipmentFactory');
+const EquipmentFactory = require('../model/EquipmentFactory');
 
 const createAssemblyObject = async () => {
     const factory = new EquipmentFactory(),

@@ -1,5 +1,5 @@
-const EQUIPMENT_CATEGORY = require('./constant/EquipmentCategoryEnum');
-const conn = require('./db/conn');
+const EQUIPMENT_CATEGORY = require('../constant/EquipmentCategoryEnum');
+const conn = require('../db/conn');
 
 class EquipmentFactory {
     create = async (category) => {

@@ -2,18 +2,20 @@
 
 require('dotenv').config();
 const { Scenes: { WizardScene } } = require('telegraf');
-const { KEYBOARD_TEXT } = require('../constant/TextEnum');
+const ТЕХТ = require('../constant/TextEnum');
 const SCENE_ID = require('../constant/SceneIdEnum');
-const logger = require('../logger');
 const keyboard = require('../keyboard');
-const createAssemblyObject = require('./createAssemblyObject');
+const createAssemblyObject = require('../service/createAssemblyObject');
+const conn = require('../db/conn');
 
-const chooseEmployeeWizard = new WizardScene(
+const scene = new WizardScene(
     SCENE_ID.CHOOSE_EMPLOYEE_SCENE,
     async (ctx) => {
+        let employees = await conn.getAllEmployees();
+
         ctx.reply(
-            KEYBOARD_TEXT.CHOOSE_EMPLOYEE,
-            await keyboard.getEmployeeKeyboard()
+            ТЕХТ.KEYBOARD.CHOOSE_EMPLOYEE,
+            keyboard.getEmployeeKeyboard(employees)
         );
 
         return ctx.wizard.next();
@@ -26,4 +28,4 @@ const chooseEmployeeWizard = new WizardScene(
     },
 );
 
-module.exports = chooseEmployeeWizard;
+module.exports = scene;

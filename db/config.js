@@ -7,7 +7,7 @@ const config = require('knex')({
         port: process.env.PORT,
         user: 'root',
         password: process.env.DB_PASS,
-        database: 'lep_stock'
+        database: 'crm'
     }
 });
 

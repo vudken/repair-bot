@@ -2,16 +2,18 @@
 
 require('dotenv').config();
 const { Composer, Scenes: { WizardScene } } = require('telegraf');
-const { KEYBOARD_TEXT, TEXT } = require('../constant/TextEnum');
+const { isAssemblyEmpty, correctModelName, getItemsFromAssemblyByCategory, updateQuantity, updateModel } = require('../service/util');
+const { saveAssemblyToDB } = require('../db/conn');
+const TEXT = require('../constant/TextEnum');
 const EQUIMPMENT_CATEGORY = require('../constant/EquipmentCategoryEnum');
+const KEYBOARD_DATA = require('../constant/KeyboardDataEnum');
 const SCENE_ID = require('../constant/SceneIdEnum');
 const keyboard = require('../keyboard');
-const { isAssemblyEmpty, correctModelName, getItemsFromAssemblyByCategory, updateQuantity, updateModel} = require('../util');
-const { saveAssemblyToDB } = require('../db/conn');
+const { handleBackBtn } = require('../service/util');
 
 const editModelKeyboard = async (ctx) => {
     return ctx.editMessageText(
-        KEYBOARD_TEXT.CHOOSE_MODEL_AND_QUANTITE,
+        ТЕХТ.KEYBOARD.CHOOSE_MODEL_AND_QUANTITE,
         keyboard.getEquipmentKeyboardByCategory(
             ctx.wizard.state.assembly,
             ctx.wizard.state.category
@@ -20,17 +22,17 @@ const editModelKeyboard = async (ctx) => {
 };
 
 const chooseCategoryHandler = new Composer();
-chooseCategoryHandler.action(Object.values(EQUIMPMENT_CATEGORY), ctx => {
+chooseCategoryHandler.action(Object.values(EQUIMPMENT_CATEGORY), (ctx) => {
     ctx.wizard.state.category = ctx.update.callback_query.data;
     editModelKeyboard(ctx);
     return ctx.wizard.next();
 });
-chooseCategoryHandler.action('saveToDB', async (ctx) => {
+chooseCategoryHandler.action(KEYBOARD_DATA.OTHER.SAVE_TO_DB, async (ctx) => {
     if (isAssemblyEmpty(ctx.wizard.state.assembly)) {
-        ctx.answerCbQuery('Вы ничего не добавили в сборку материала', { show_alert: true });
+        ctx.answerCbQuery(TEXT.INFO.NOTHING_ADDED, { show_alert: true });
         return;
     };
-    await ctx.answerCbQuery('Материал успешно записан на сотрудника и добавлен в базу данных', { show_alert: true });
+    await ctx.answerCbQuery(TEXT.INFO.MATERIAL_RECORDED, { show_alert: true });
     await ctx.deleteMessage();
     await ctx.scene.leave();
     await saveAssemblyToDB(ctx.wizard.state.assembly);
@@ -40,7 +42,7 @@ const chooseModelAndQuantiteHandler = new Composer();
 chooseModelAndQuantiteHandler.action(/order:(.+):(.+)/, async (ctx) => {
     ctx.answerCbQuery();
     const [, modelName, action] = ctx.match;
-    if (action === TEXT.INFO) return;
+    if (action === TEXT.OTHER.INFO) return;
 
     const category = ctx.wizard.state.category;
     const assembly = ctx.wizard.state.assembly;
@@ -48,8 +50,8 @@ chooseModelAndQuantiteHandler.action(/order:(.+):(.+)/, async (ctx) => {
     const correctedModelName = correctModelName(modelName);
 
     let quantity = items.find(i => i.model === modelName).quantity;
-    if (action == TEXT.INCREMENT) quantity++;
-    if (action == TEXT.DICREMENT && quantity > 0) quantity--;
+    if (action === TEXT.OTHER.INCREMENT) quantity++;
+    if (action === TEXT.OTHER.DICREMENT && quantity > 0) quantity--;
     updateQuantity(items, modelName, quantity);
 
     if (quantity > 0) {
@@ -61,8 +63,8 @@ chooseModelAndQuantiteHandler.action(/order:(.+):(.+)/, async (ctx) => {
         editModelKeyboard(ctx);
     }
 });
-chooseModelAndQuantiteHandler.action('wizardBack', ctx => {
-    ctx.scene.reenter();
+chooseModelAndQuantiteHandler.action(KEYBOARD_DATA.OTHER.BACK_BTN, (ctx) => {
+    handleBackBtn(ctx);
 });
 
 const scene = new WizardScene(
@@ -71,15 +73,15 @@ const scene = new WizardScene(
     chooseModelAndQuantiteHandler,
 );
 
-scene.enter(async ctx => {
+scene.enter(async (ctx) => {
     return (ctx.update.callback_query) ?
         ctx.editMessageText(
-            KEYBOARD_TEXT.CHOOSE_CATEGORY,
+            ТЕХТ.KEYBOARD.CHOOSE_CATEGORY,
             keyboard.getCategoryKeyboard()
         )
         :
         ctx.reply(
-            KEYBOARD_TEXT.CHOOSE_CATEGORY,
+            ТЕХТ.KEYBOARD.CHOOSE_CATEGORY,
             keyboard.getCategoryKeyboard()
         );
 });

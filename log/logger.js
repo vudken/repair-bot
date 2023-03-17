@@ -27,5 +27,8 @@ log4js.configure({
 });
 
 const logger = log4js.getLogger();
-module.exports = logger;
-// export const logToFile = log4js.getLogger('app');
+const logToFile = log4js.getLogger('app');
+module.exports = {
+    logger,
+    logToFile
+}
