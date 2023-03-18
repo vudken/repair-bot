@@ -38,7 +38,7 @@ optionsHandler.action(/workId\d+/, async (ctx) => {
 const descriptionHandler = new Composer();
 descriptionHandler.action(/workId\d+/, async (ctx) => {
     ctx.editMessageText(
-        `${TEXT.KEYBOARD.WORK_DECRIPTION}\n\nАдрес: ${ctx.wizard.state.work.address}\n\nДоп инфо: ${ctx.wizard.state.work.description}`,
+        `<b>Адрес:</b> ${ctx.wizard.state.work.address}\n\n<b>Доп инфо:</b> ${ctx.wizard.state.work.description}`,
         keyboard.getBackKeyboard(),
     );
     

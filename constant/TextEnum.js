@@ -27,17 +27,17 @@ const CAUSE = Object.freeze({
 });
 
 const KEYBOARD = Object.freeze({
-	CHOOSE_OPTION: '<b>Выберите один из вариантов:</b>',
-	CHOOSE_EMPLOYEE: '<b>Чтобы назначить материал, выберите сотрудника:</b>',
-	CHOOSE_ADDRESS: '<b>Выберите адрес работы:</b>',
-	CHOOSE_EQUIMPMENT: '<b>Выберите материал:</b>',
-	CHOOSE_CATEGORY: '<b>Выберите категорию:</b>',
-	CHOOSE_MODEL_AND_QUANTITE: '<b>Выберите модель и кол-во:</b>',
-	CHOOSE_WHERE: '<b>Выберите где была произведена работа:</b>',
-	CHOOSE_PROBLEM_WITH: '<b>Выберите в чём проблема:</b>',
-	CHOOSE_CAUSE: '<b>Выберите с чем произведена работа:</b>',
-	ATTACH_PHOTO: '<b>Прикрепите фото, нажав на скрепку:</b>',
-	WORK_DECRIPTION: '<b>Описание работы</b>',
+	CHOOSE_OPTION: `${emoji.get('👀')} <b>Выберите один из вариантов:</b>`,
+	CHOOSE_EMPLOYEE: `${emoji.get('👀')} <b>Чтобы назначить материал, выберите сотрудника:</b>`,
+	CHOOSE_ADDRESS: `${emoji.get('👀')} <b>Выберите адрес работы:</b>`,
+	CHOOSE_EQUIMPMENT: `${emoji.get('👀')} <b>Выберите материал:</b>`,
+	CHOOSE_CATEGORY: `${emoji.get('👀')} <b>Выберите категорию:</b>`,
+	CHOOSE_MODEL_AND_QUANTITE: `${emoji.get('👀')} <b>Выберите модель и кол-во:</b>`,
+	CHOOSE_WHERE: `${emoji.get('👀')} <b>Выберите где была произведена работа:</b>`,
+	CHOOSE_PROBLEM_WITH: `${emoji.get('👀')} <b>Выберите в чём проблема:</b>`,
+	CHOOSE_CAUSE: `${emoji.get('👀')} <b>Выберите с чем произведена работа:</b>`,
+	ATTACH_PHOTO: `${emoji.get('👀')} <b>Прикрепите фото, нажав на скрепку:</b>`,
+	WORK_DECRIPTION: `${emoji.get('👀')} <b>Описание работы:</b>`,
 });
 
 const EQUIMPMENT = Object.freeze({
@@ -55,16 +55,16 @@ const BOT = Object.freeze({
 });
 
 const BTN = Object.freeze({
-	BACK_BTN: `Назад ${emoji.get('arrow_left')}`,
-	CONTINUE: `Продолжить ${emoji.get('arrow_right')}`,
+	BACK_BTN: `${emoji.get('arrow_left')} Назад`,
+	CONTINUE: `${emoji.get('arrow_right')} Продолжить `,
 	UNDERSTAND: `Я понял ${emoji.get('x')}`,
 	COMPLETE: 'Завершить',
-	COMPLETE_WORK: `Завершить работу ${emoji.get('arrow_right')}`,
-	SEND: `Отправить ${emoji.get('arrow_up')}`,
+	COMPLETE_WORK: `${emoji.get('arrow_right')} Завершить работу `,
+	SEND: `${emoji.get('arrow_up')} Отправить `,
 	WRITE_ON_WORKER: 'Записать материал на работника',
-	GET_DESCRIPTION: `Получить описание работы ${emoji.get('arrow_down')}`,
+	GET_DESCRIPTION: `${emoji.get('arrow_down')} Получить описание работы `,
 	ADD_ANOTHER_PLACE: 'Добавить ещё место',
-	CLOSE_MENU: `Закрыть меню ${emoji.get('x')}`
+	CLOSE_MENU: `${emoji.get('x')} Закрыть меню`
 });
 
 const INFO = Object.freeze({
