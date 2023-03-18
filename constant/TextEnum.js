@@ -64,6 +64,7 @@ const BTN = Object.freeze({
 	WRITE_ON_WORKER: 'Записать материал на работника',
 	GET_DESCRIPTION: `Получить описание работы ${emoji.get('arrow_down')}`,
 	ADD_ANOTHER_PLACE: 'Добавить ещё место',
+	CLOSE_MENU: `Закрыть меню ${emoji.get('x')}`
 });
 
 const INFO = Object.freeze({

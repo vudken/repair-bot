@@ -3,7 +3,8 @@
 const TEXT = require("../constant/TextEnum");
 const { Composer } = require('telegraf');
 const KEYBOARD_DATA = require('../constant/KeyboardDataEnum');
-const emoji = require('node-emoji')
+const emoji = require('node-emoji');
+const emojiStrip = require('emoji-strip');
 
 const isAssemblyEmpty = (assembly) => {
     let isEmpty = true;
@@ -72,7 +73,24 @@ const updateWorkById = (works, id, updatedWork) => {
 
 const getCheckMark = () => {
     return emoji.get('white_check_mark');
-}
+};
+
+const isContainEmoji = (str) => {
+    return (new RegExp('\\p{Emoji}', 'gu').test(str)) ? true : false;
+};
+
+const checkAndUncheck = (keyboardArr, cbData) => {
+    return keyboardArr.map((btnArr) => {
+        const btn = btnArr[0];
+
+        if (btn.callback_data === cbData && !isContainEmoji(btn.text)) {
+            [{ ...btn, text: `${btn.text}  ${getCheckMark()}` }];
+            
+        } else {
+            [{ ...btn, text: `${emojiStrip(btn.text)}` }];
+        }
+    });
+};
 
 module.exports = {
     isAssemblyEmpty,
@@ -84,5 +102,7 @@ module.exports = {
     getWorkById,
     getWorkDataById,
     updateWorkById,
-    getCheckMark
+    getCheckMark,
+    isContainEmoji,
+    checkAndUncheck
 };

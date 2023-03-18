@@ -15,6 +15,8 @@ const createKeyboard = (dataArr) => {
         ]);
     });
 
+    keyboard.push([Markup.button.callback(TEXT.BTN.CLOSE_MENU, KEYBOARD_DATA.OTHER.CLOSE_MENU)]);
+
     return {
         parse_mode: 'HTML',
         ...Markup.inlineKeyboard(keyboard)
@@ -121,7 +123,7 @@ const getProblemWithKeyboard = () => {
     };
 };
 
-const getCauseKeyboard = (where, problemWith, isClicked = false, cbData = null) => {
+const getCauseKeyboardArr = (where, problemWith) => {
     let keyboard = [];
 
     switch (where) {
@@ -189,19 +191,7 @@ const getCauseKeyboard = (where, problemWith, isClicked = false, cbData = null) 
     keyboard.push([Markup.button.callback(TEXT.BTN.CONTINUE, KEYBOARD_DATA.OTHER.CONTINUE_BTN)]);
     keyboard.push([Markup.button.callback(TEXT.BTN.BACK_BTN, KEYBOARD_DATA.OTHER.BACK_BTN)]);
 
-    if (isClicked) {
-        keyboard = keyboard.map((btnArr) => {
-            const btn = btnArr[0];
-            return (btn.callback_data === cbData)
-                ? [{ ...btn, text: `${btn.text}  ${getCheckMark()}` }]
-                : btnArr;
-        });
-    }
-
-    return {
-        parse_mode: 'HTML',
-        ...Markup.inlineKeyboard(keyboard)
-    };
+    return keyboard;
 };
 
 const getBackKeyboard = () => {
@@ -238,7 +228,7 @@ module.exports = {
     getEquipmentKeyboard,
     getWhereKeyboard,
     getProblemWithKeyboard,
-    getCauseKeyboard,
+    getCauseKeyboardArr,
     getConfirmationKeyboard,
     getBackKeyboard,
     getPhotoWarningKeyboard

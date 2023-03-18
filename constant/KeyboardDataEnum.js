@@ -32,6 +32,8 @@ const OTHER = Object.freeze({
 	SEND: 'send',
 	OPTIONS_HANDLER: 'optionsHandler',
 	UNDERSTAND: 'understand',
+	DISABLED: 'disabled',
+	CLOSE_MENU: 'closeMenu'
 });
 
 module.exports = {

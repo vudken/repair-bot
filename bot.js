@@ -35,7 +35,13 @@ bot.telegram
         if (offset) return bot.telegram.callApi("getUpdates", { offset });
     });
 bot.start((ctx) => {
-    ctx.scene.enter(SCENE_ID.CHOOSE_WORK_SCENE);
+    // const hasActiveScene = !!ctx.session.scene;
+
+    // if (hasActiveScene) {
+    //     ctx.reply('Закончите, пожалуйста, предыдущее шаги в меню');
+    // } else {
+        ctx.scene.enter(SCENE_ID.CHOOSE_WORK_SCENE);
+    // }
 });
 bot.on(['photo', 'media_group'], async (ctx) => {
     const mediaGroup = ctx.mediaGroup;
@@ -77,6 +83,10 @@ bot.action(SCENE_ID.COMPLETE_WORK_SCENE, (ctx) => {
     // console.log(ctx.wizard.state.work)
     ctx.deleteMessage();
     return ctx.scene.enter(SCENE_ID.COMPLETE_WORK_SCENE, ctx.wizard.state);
+});
+bot.action(KEYBOARD_DATA.OTHER.CLOSE_MENU, (ctx) => {
+    ctx.scene.leave()
+    ctx.deleteMessage()
 });
 
 module.exports = bot;

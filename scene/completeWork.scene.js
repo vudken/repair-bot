@@ -2,15 +2,19 @@
 
 require('dotenv').config();
 const { Scenes: { WizardScene }, Composer } = require('telegraf');
+const { Markup } = require('telegraf');
+const emoji = require('node-emoji');
 const EQUIMPMENT_CATEGORY = require('../constant/EquipmentCategoryEnum');
 const KEYBOARD_DATA = require('../constant/KeyboardDataEnum');
 const SCENE_ID = require('../constant/SceneIdEnum');
 const TEXT = require('../constant/TextEnum');
 const keyboard = require('../keyboard');
 const conn = require('../db/conn');
-const { handleBackBtn, updateWorkById } = require('../service/util');
+const emojiStrip = require('emoji-strip');
+const { handleBackBtn, updateWorkById, getCheckMark, isContainEmoji, checkAndUncheck } = require('../service/util');
 const sendEmail = require('../mailer');
-const emoji = require('node-emoji')
+
+
 
 const chooseProblemWithHandler = new Composer();
 chooseProblemWithHandler.action(Object.values(KEYBOARD_DATA.WHERE), (ctx) => {
@@ -19,7 +23,7 @@ chooseProblemWithHandler.action(Object.values(KEYBOARD_DATA.WHERE), (ctx) => {
         problemWith: null,
         cause: []
     };
-    console.log(emoji.find('❌'));
+    // console.log(emoji.find('❌'));
 
     ctx.answerCbQuery();
     ctx.editMessageText(
@@ -33,23 +37,17 @@ chooseProblemWithHandler.action(Object.values(KEYBOARD_DATA.WHERE), (ctx) => {
 const chooseCauseHandler = new Composer();
 chooseCauseHandler.action(Object.values(KEYBOARD_DATA.PROBLEM_WITH), (ctx) => {
     const problemWith = ctx.callbackQuery.data;
+    const keyboardArr = keyboard.getCauseKeyboardArr(ctx.wizard.state.job.where, problemWith);
 
+    ctx.session.causeKeyboardArr = keyboardArr;
     ctx.wizard.state.job.problemWith = problemWith;
     ctx.answerCbQuery();
     ctx.editMessageText(
         TEXT.KEYBOARD.CHOOSE_CAUSE,
-        keyboard.getCauseKeyboard(ctx.wizard.state.job.where, problemWith)
-    );
-
-    return ctx.wizard.next();
-});
-
-const updateKeyboardHandler = new Composer();
-updateKeyboardHandler.action([...Object.values(KEYBOARD_DATA.CAUSE), ...Object.values(EQUIMPMENT_CATEGORY)], (ctx) => {
-    ctx.answerCbQuery();
-    ctx.editMessageText(
-        TEXT.KEYBOARD.CHOOSE_CAUSE,
-        keyboard.getCauseKeyboard(ctx.wizard.state.job.where, problemWith, true, ctx.callbackQuery.data)
+        {
+            parse_mode: 'HTML',
+            ...Markup.inlineKeyboard(keyboardArr)
+        }
     );
 
     return ctx.wizard.next();
@@ -97,7 +95,6 @@ const scene = new WizardScene(
     chooseProblemWithHandler,
     chooseCauseHandler,
     attachPhotoHandler,
-    updateKeyboardHandler,
     completeHandler,
 );
 scene.enter((ctx) => {
@@ -110,6 +107,38 @@ scene.use(handleBackBtn());
 scene.action(SCENE_ID.CHOOSE_WORK_SCENE, (ctx) => {
     ctx.deleteMessage();
     return ctx.scene.enter(SCENE_ID.CHOOSE_WORK_SCENE, ctx.wizard.state);
+});
+scene.action([...Object.values(KEYBOARD_DATA.CAUSE), ...Object.values(EQUIMPMENT_CATEGORY)], (ctx) => {
+    const cbData = ctx.callbackQuery.data, cause = ctx.wizard.state.job.cause;
+
+    let keyboardArr = ctx.session.causeKeyboardArr;
+    keyboardArr = keyboardArr.map((btnArr) => {
+        const btn = btnArr[0];
+
+        if (btn.callback_data === cbData && !isContainEmoji(btn.text)) {
+            cause.push(cbData);
+            return [{ ...btn, text: `${btn.text}  ${getCheckMark()}` }];
+        }
+
+        if (btn.callback_data === cbData && isContainEmoji(btn.text)) {
+            ctx.wizard.state.job.cause = cause.filter(el => el != cbData);
+            return [{ ...btn, text: `${emojiStrip(btn.text).trim()}` }];
+        }
+
+        return btnArr;
+    });
+
+    ctx.session.causeKeyboardArr = keyboardArr;
+    ctx.answerCbQuery();
+    ctx.editMessageText(
+        TEXT.KEYBOARD.CHOOSE_CAUSE,
+        {
+            parse_mode: 'HTML',
+            ...Markup.inlineKeyboard(keyboardArr)
+        }
+    );
+
+    return ctx.wizard.next();
 });
 
 module.exports = scene;
