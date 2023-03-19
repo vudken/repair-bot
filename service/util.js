@@ -1,8 +1,6 @@
 'use strict';
 
 const { Composer } = require('telegraf');
-const emoji = require('node-emoji');
-const emojiStrip = require('emoji-strip');
 const TEXT = require("../constant/TextEnum");
 const KEYBOARD_DATA = require('../constant/KeyboardDataEnum');
 
@@ -66,29 +64,8 @@ const getWorkDataById = (works, id, property) => {
     return work ? work[property] : null;
 };
 
-const updateWorkById = (works, id, updatedWork) => {
-    return works.map((work) => (work.id === id) ? updatedWork : work);
-};
-
-const getCheckMark = () => {
-    return emoji.get('white_check_mark');
-};
-
 const isContainsEmoji = (str) => {
     return (new RegExp('\\p{Emoji}', 'gu').test(str)) ? true : false;
-};
-
-const checkAndUncheck = (keyboardArr, cbData) => {
-    return keyboardArr.map((btnArr) => {
-        const btn = btnArr[0];
-
-        if (btn.callback_data === cbData && !isContainsEmoji(btn.text)) {
-            [{ ...btn, text: `${btn.text}  ${getCheckMark()}` }];
-
-        } else {
-            [{ ...btn, text: `${emojiStrip(btn.text)}` }];
-        }
-    });
 };
 
 const enterSceneHandler = (ctx, txt, keyboard) => {
@@ -110,11 +87,7 @@ module.exports = {
     updateQuantity,
     updateModel,
     handleBackBtn,
-    getWorkById,
     getWorkDataById,
-    updateWorkById,
-    getCheckMark,
     isContainsEmoji,
-    checkAndUncheck,
-    enterSceneHandler
+    enterSceneHandler,
 };

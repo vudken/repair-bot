@@ -1,11 +1,12 @@
 const db = require('./config');
+const table = 'work';
 
 const parseResFromDB = (res) => {
     return Object.values(JSON.parse(JSON.stringify(res)));
 };
 
 const getAllWork = async () => {
-    const work = await db('work')
+    const work = await db(table)
         .select('id', 'name', 'address', 'description', { 'isCompleted': 'is_completed' });
     return parseResFromDB(work);
 };
@@ -61,20 +62,10 @@ const getAllSensors = async () => {
     return parseResFromDB(sensors);
 };
 
-const updateWorkIsCompleted = async (id, isCompleted) => {
-    const isCompletedValue = !!isCompleted ? 1 : 0;
-    await db('work')
+const updateWork = async (id, update) => {
+    await db(table)
         .where({ id: id })
-        .update('is_completed', isCompletedValue);
-};
-
-const getWorkDescriptionById = async (id) => {
-    const description = await db('work')
-        .select('address', 'description')
-        .where({ id: id })
-        .first();
-
-    return parseResFromDB(description);
+        .update(update);
 };
 
 const saveAssemblyToDB = async (assembly) => {
@@ -107,9 +98,9 @@ const saveAssemblyToDB = async (assembly) => {
         query = { employee_id: assembly.employeeId.split('_')[2], ...query };
         insertQuery.push(query);
     } while (oneMoreIteration);
-    console.log(insertQuery);
 
-    await db('material_on_employee').insert(insertQuery);
+    await db('material_on_employee')
+        .insert(insertQuery);
 };
 
 module.exports = {
@@ -121,6 +112,5 @@ module.exports = {
     getAllRegulators,
     getAllSensors,
     saveAssemblyToDB,
-    updateWorkIsCompleted,
-    getWorkDescriptionById
+    updateWork,
 };

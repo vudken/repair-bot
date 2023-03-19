@@ -5,7 +5,7 @@ const EQUIMPMENT_CATEGORY = require('./constant/EquipmentCategoryEnum');
 const KEYBOARD_DATA = require('./constant/KeyboardDataEnum');
 const SCENE_ID = require('./constant/SceneIdEnum');
 const TEXT = require('./constant/TextEnum');
-const { getItemsFromAssemblyByCategory, getCheckMark } = require('./service/util');
+const { getItemsFromAssemblyByCategory  } = require('./service/util');
 
 const createKeyboard = (dataArr) => {
     let keyboard = [];

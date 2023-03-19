@@ -24,8 +24,7 @@ const sendMail = async (mailDetails, callback) => {
     }
 };
 
-const sendEmail = async (ctx) => {
-    const work = ctx.wizard.state.work;
+const sendEmail = async (work) => {
     sendMail({
         from: {
             name: 'Ремонтные работы',
@@ -35,7 +34,7 @@ const sendEmail = async (ctx) => {
         subject: `(Ремонтная работа)`,
         text: `Это письмо сгенерировано автоматически в тестовом режиме и отправлено через телеграмм-бот.\n
         Произведена ремонтная работа:
-        Адрес: ${ctx.wizard.state.work.аddress}
+        Адрес: ${work.аddress}
         Где: ${work.where}
         Что: ${work.problemWith}
         Заменено: ${work.cause}`,

@@ -9,12 +9,8 @@ const KEYBOARD_DATA = require('../constant/KeyboardDataEnum');
 const SCENE_ID = require('../constant/SceneIdEnum');
 const TEXT = require('../constant/TextEnum');
 const keyboard = require('../keyboard');
-const conn = require('../db/conn');
 const emojiStrip = require('emoji-strip');
-const sendEmail = require('../mailer');
 const { handleBackBtn,
-    updateWorkById,
-    getCheckMark,
     isContainsEmoji,
     enterSceneHandler } = require('../service/util');
 
@@ -25,7 +21,6 @@ chooseProblemWithHandler.action(Object.values(KEYBOARD_DATA.WHERE), (ctx) => {
         problemWith: null,
         cause: []
     };
-    // console.log(emoji.find('❌'));
 
     ctx.answerCbQuery();
     ctx.editMessageText(
@@ -77,7 +72,7 @@ checkOrUncheckHandler.action([...Object.values(KEYBOARD_DATA.CAUSE),
 
         if (btn.callback_data === cbData && !isContainsEmoji(btn.text)) {
             cause.push(cbData);
-            return [{ ...btn, text: `${btn.text}  ${getCheckMark()}` }];
+            return [{ ...btn, text: `${btn.text}  ${emoji.get('white_check_mark')}` }];
         }
 
         if (btn.callback_data === cbData && isContainsEmoji(btn.text)) {
@@ -97,9 +92,6 @@ checkOrUncheckHandler.action([...Object.values(KEYBOARD_DATA.CAUSE),
             ...Markup.inlineKeyboard(keyboardArr)
         }
     );
-
-    console.log('END =============================================');
-    console.log(ctx.wizard.state);
 });
 
 const scene = new WizardScene(
