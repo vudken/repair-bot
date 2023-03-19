@@ -1,10 +1,10 @@
 'use strict';
 
-const TEXT = require("../constant/TextEnum");
 const { Composer } = require('telegraf');
-const KEYBOARD_DATA = require('../constant/KeyboardDataEnum');
 const emoji = require('node-emoji');
 const emojiStrip = require('emoji-strip');
+const TEXT = require("../constant/TextEnum");
+const KEYBOARD_DATA = require('../constant/KeyboardDataEnum');
 
 const isAssemblyEmpty = (assembly) => {
     let isEmpty = true;
@@ -52,7 +52,6 @@ const updateModel = (items, model, quantity) => {
 
 const handleBackBtn = () => {
     return new Composer().action(KEYBOARD_DATA.OTHER.BACK_BTN, async (ctx) => {
-        ctx.answerCbQuery();
         ctx.scene.reenter();
         ctx.deleteMessage();
     });
@@ -85,11 +84,23 @@ const checkAndUncheck = (keyboardArr, cbData) => {
 
         if (btn.callback_data === cbData && !isContainEmoji(btn.text)) {
             [{ ...btn, text: `${btn.text}  ${getCheckMark()}` }];
-            
+
         } else {
             [{ ...btn, text: `${emojiStrip(btn.text)}` }];
         }
     });
+};
+
+const enterSceneHandler = (ctx, txt, keyboard) => {
+    return (ctx.update.callback_query && ctx.update.callback_query.data != KEYBOARD_DATA.OTHER.BACK_BTN)
+        ? ctx.editMessageText(
+            txt,
+            keyboard
+        )
+        : ctx.reply(
+            txt,
+            keyboard
+        );
 };
 
 module.exports = {
@@ -104,5 +115,6 @@ module.exports = {
     updateWorkById,
     getCheckMark,
     isContainEmoji,
-    checkAndUncheck
+    checkAndUncheck,
+    enterSceneHandler
 };

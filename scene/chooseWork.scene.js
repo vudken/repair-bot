@@ -1,11 +1,13 @@
 'use strict';
 
 const { Scenes: { WizardScene }, Composer } = require('telegraf');
-const { handleBackBtn, getWorkDataById } = require('../service/util');
 const SCENE_ID = require('../constant/SceneIdEnum');
 const TEXT = require('../constant/TextEnum');
 const keyboard = require('../keyboard');
 const conn = require('../db/conn');
+const { handleBackBtn,
+    getWorkDataById,
+    enterSceneHandler } = require('../service/util');
 
 const optionsHandler = new Composer();
 optionsHandler.action(/workId\d+/, async (ctx) => {
@@ -32,7 +34,7 @@ optionsHandler.action(/workId\d+/, async (ctx) => {
         keyboard.getAddressKeyboard(cbData)
     );
 
-    ctx.wizard.next();
+    return ctx.wizard.next();
 });
 
 const descriptionHandler = new Composer();
@@ -41,8 +43,8 @@ descriptionHandler.action(/workId\d+/, async (ctx) => {
         `<b>Адрес:</b> ${ctx.wizard.state.work.address}\n\n<b>Доп инфо:</b> ${ctx.wizard.state.work.description}`,
         keyboard.getBackKeyboard(),
     );
-    
-    return ctx.wizard.next(ctx);
+
+    return ctx.wizard.next();
 });
 
 const scene = new WizardScene(
@@ -53,16 +55,22 @@ const scene = new WizardScene(
 scene.use(handleBackBtn());
 scene.enter(async (ctx) => {
     const works = await conn.getAllWork();
-
-    // const imagePaths = ['/path/to/image1.jpg', '/path/to/image2.jpg', '/path/to/image3.jpg'];
-    // const jsonImagePaths = JSON.stringify(imagePaths);
-    // console.log(jsonImagePaths)
-
     ctx.session.works = works;
-    ctx.reply(
+
+    enterSceneHandler(ctx,
         TEXT.KEYBOARD.CHOOSE_ADDRESS,
         keyboard.getWorkKeyboard(works)
     );
+
+    // ctx.reply(
+    //     TEXT.KEYBOARD.CHOOSE_ADDRESS,
+    //     keyboard.getWorkKeyboard(works)
+    // );
 });
+
+// scene.action(SCENE_ID.COMPLETE_WORK_SCENE, (ctx) => {
+//     ctx.scene.leave();
+//     return ctx.scene.enter(SCENE_ID.COMPLETE_WORK_SCENE, ctx.wizard.state);
+// });
 
 module.exports = scene;

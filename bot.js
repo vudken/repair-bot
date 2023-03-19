@@ -16,9 +16,10 @@ const chooseEmployeeWizard = require('./scene/chooseEmployee.scene');
 const chooseWorkWizard = require('./scene/chooseWork.scene');
 const equipmentAssemblyWizard = require('./scene/equipmentAssembly.scene');
 const completeWorkWizard = require('./scene/completeWork.scene');
+const sendWorkWizard = require('./scene/sendWork.scene');
 const getPhotoPath = require('./service/getPhotoFromTg');
 
-const stage = new Stage([entryWizard, chooseEmployeeWizard, chooseWorkWizard, completeWorkWizard, equipmentAssemblyWizard]);
+const stage = new Stage([entryWizard, chooseEmployeeWizard, chooseWorkWizard, completeWorkWizard, equipmentAssemblyWizard, sendWorkWizard]);
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 process.on('uncaughtException', (err) => {
@@ -40,7 +41,7 @@ bot.start((ctx) => {
     // if (hasActiveScene) {
     //     ctx.reply('Закончите, пожалуйста, предыдущее шаги в меню');
     // } else {
-        ctx.scene.enter(SCENE_ID.CHOOSE_WORK_SCENE);
+    ctx.scene.enter(SCENE_ID.CHOOSE_WORK_SCENE);
     // }
 });
 bot.on(['photo', 'media_group'], async (ctx) => {
@@ -79,14 +80,14 @@ bot.hears(['id', 'Id'], (ctx) => {
     logger.info(`User's chat id is: ${ctx.message.chat.id}`);
 });
 bot.action(KEYBOARD_DATA.OTHER.UNDERSTAND, (ctx) => ctx.deleteMessage());
-bot.action(SCENE_ID.COMPLETE_WORK_SCENE, (ctx) => {
-    // console.log(ctx.wizard.state.work)
-    ctx.deleteMessage();
-    return ctx.scene.enter(SCENE_ID.COMPLETE_WORK_SCENE, ctx.wizard.state);
+bot.action(/\w+_SCENE_ID/, (ctx) => {
+    ctx.scene.leave();
+    // console.log(ctx.wizard.state.work);
+    return ctx.scene.enter(ctx.update.callback_query.data, ctx.wizard.state);
 });
 bot.action(KEYBOARD_DATA.OTHER.CLOSE_MENU, (ctx) => {
-    ctx.scene.leave()
-    ctx.deleteMessage()
+    ctx.scene.leave();
+    ctx.deleteMessage();
 });
 
 module.exports = bot;

@@ -4,5 +4,5 @@ log/app.log
 .env
 test.js
 copy
-draft
+draft.js
 *.txt

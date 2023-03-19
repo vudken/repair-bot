@@ -100,12 +100,6 @@ const getWhereKeyboard = (cbData) => {
         [Markup.button.callback(TEXT.BTN.BACK_BTN, SCENE_ID.CHOOSE_WORK_SCENE)],
     ];
 
-    if (cbData) {
-        keyboard = keyboard.map(buttton => {
-            console.log(buttton[0]);
-        });
-    }
-
     return {
         parse_mode: 'HTML',
         ...Markup.inlineKeyboard(keyboard)

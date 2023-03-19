@@ -72,15 +72,13 @@ const scene = new WizardScene(
     chooseCategoryHandler,
     chooseModelAndQuantiteHandler,
 );
-
 scene.enter(async (ctx) => {
-    return (ctx.update.callback_query) ?
-        ctx.editMessageText(
+    return (ctx.update.callback_query)
+        ? ctx.editMessageText(
             ТЕХТ.KEYBOARD.CHOOSE_CATEGORY,
             keyboard.getCategoryKeyboard()
         )
-        :
-        ctx.reply(
+        : ctx.reply(
             ТЕХТ.KEYBOARD.CHOOSE_CATEGORY,
             keyboard.getCategoryKeyboard()
         );

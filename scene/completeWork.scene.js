@@ -11,8 +11,12 @@ const TEXT = require('../constant/TextEnum');
 const keyboard = require('../keyboard');
 const conn = require('../db/conn');
 const emojiStrip = require('emoji-strip');
-const { handleBackBtn, updateWorkById, getCheckMark, isContainEmoji, checkAndUncheck } = require('../service/util');
 const sendEmail = require('../mailer');
+const { handleBackBtn,
+    updateWorkById,
+    getCheckMark,
+    isContainEmoji,
+    enterSceneHandler } = require('../service/util');
 
 const chooseProblemWithHandler = new Composer();
 chooseProblemWithHandler.action(Object.values(KEYBOARD_DATA.WHERE), (ctx) => {
@@ -58,15 +62,20 @@ checkOrUncheckHandler.action([...Object.values(KEYBOARD_DATA.CAUSE),
 
     ctx.wizard.state.job.photos = [];
     ctx.wizard.state.job.cause.push(cbData);
-    
-    if (cbData === KEYBOARD_DATA.OTHER.CONTINUE_BTN) {
-        ctx.answerCbQuery();
-        ctx.editMessageText(
-            TEXT.KEYBOARD.ATTACH_PHOTO,
-            keyboard.getBackKeyboard()
-        );
 
-        return ctx.wizard.next();
+    // if (cbData === KEYBOARD_DATA.OTHER.CONTINUE_BTN) {
+    //     ctx.answerCbQuery();
+    //     ctx.editMessageText(
+    //         TEXT.KEYBOARD.ATTACH_PHOTO,
+    //         keyboard.getBackKeyboard()
+    //     );
+
+    //     return ctx.wizard.next();
+    // }
+
+    if (cbData === KEYBOARD_DATA.OTHER.CONTINUE_BTN) {
+        // ctx.deleteMessage();
+        return ctx.scene.enter(SCENE_ID.SEND_WORK_SCENE, ctx.wizard.state);
     }
 
     let keyboardArr = ctx.session.causeKeyboardArr;
@@ -97,49 +106,41 @@ checkOrUncheckHandler.action([...Object.values(KEYBOARD_DATA.CAUSE),
     );
 });
 
-const completeHandler = new Composer();
-completeHandler.action(KEYBOARD_DATA.OTHER.COMPLETE, (ctx) => {
-    ctx.wizard.state.job.cause.push(ctx.callbackQuery.data);
-    ctx.wizard.state.job.photos = [];
-    console.log(ctx.wizard.state.job);
-    try {
-        const job = ctx.wizard.state.job;
+// const completeHandler = new Composer();
+// completeHandler.action(KEYBOARD_DATA.OTHER.COMPLETE, (ctx) => {
+//     ctx.wizard.state.job.cause.push(ctx.callbackQuery.data);
+//     ctx.wizard.state.job.photos = [];
+//     try {
+//         const job = ctx.wizard.state.job;
 
-        console.log(job);
+//         works = updateWorkById(works, work.id, work);
+//         // conn.updateWorkIsCompleted(work.id, true);
+//         // sendEmail(ctx);
 
-        works = updateWorkById(works, work.id, work);
-        // conn.updateWorkIsCompleted(work.id, true);
-        // sendEmail(ctx);
+//         ctx.answerCbQuery(
+//             TEXT.INFO.COMPLETE_MSG_ALERT,
+//             { show_alert: true }
+//         );
+//         ctx.deleteMessage();
 
-        ctx.answerCbQuery(
-            TEXT.INFO.COMPLETE_MSG_ALERT,
-            { show_alert: true }
-        );
-        ctx.deleteMessage();
-
-        return ctx.scene.leave();
-    } catch (error) {
-        return ctx.reply(TEXT.OTHER.ERROR);
-    }
-});
+//         return ctx.scene.leave();
+//     } catch (error) {
+//         return ctx.reply(TEXT.OTHER.ERROR);
+//     }
+// });
 
 const scene = new WizardScene(
     SCENE_ID.COMPLETE_WORK_SCENE,
     chooseProblemWithHandler,
     chooseCauseHandler,
     checkOrUncheckHandler,
-    completeHandler,
 );
+scene.use(handleBackBtn());
 scene.enter((ctx) => {
-    return ctx.reply(
+    enterSceneHandler(ctx,
         TEXT.KEYBOARD.CHOOSE_WHERE,
         keyboard.getWhereKeyboard()
     );
-});
-scene.use(handleBackBtn());
-scene.action(SCENE_ID.CHOOSE_WORK_SCENE, (ctx) => {
-    ctx.deleteMessage();
-    return ctx.scene.enter(SCENE_ID.CHOOSE_WORK_SCENE, ctx.wizard.state);
 });
 
 module.exports = scene;
