@@ -51,10 +51,6 @@ const scene = new WizardScene(
     descriptionHandler,
 );
 scene.use(handleBackBtn());
-// scene.action(SCENE_ID.COMPLETE_WORK_SCENE, (ctx) => {
-//     ctx.deleteMessage();
-//     ctx.scene.enter(SCENE_ID.COMPLETE_WORK_SCENE, ctx.wizard.state);
-// });
 scene.enter(async (ctx) => {
     const works = await conn.getAllWork();
 

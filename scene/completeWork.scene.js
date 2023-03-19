@@ -14,8 +14,6 @@ const emojiStrip = require('emoji-strip');
 const { handleBackBtn, updateWorkById, getCheckMark, isContainEmoji, checkAndUncheck } = require('../service/util');
 const sendEmail = require('../mailer');
 
-
-
 const chooseProblemWithHandler = new Composer();
 chooseProblemWithHandler.action(Object.values(KEYBOARD_DATA.WHERE), (ctx) => {
     ctx.wizard.state.job = {
@@ -53,63 +51,23 @@ chooseCauseHandler.action(Object.values(KEYBOARD_DATA.PROBLEM_WITH), (ctx) => {
     return ctx.wizard.next();
 });
 
-const attachPhotoHandler = new Composer();
-attachPhotoHandler.action(KEYBOARD_DATA.OTHER.CONTINUE_BTN, (ctx) => {
-    ctx.wizard.state.job.cause.push(ctx.callbackQuery.data);
-    ctx.wizard.state.job.photos = [];
-    ctx.answerCbQuery();
-    ctx.editMessageText(
-        TEXT.KEYBOARD.ATTACH_PHOTO,
-        keyboard.getBackKeyboard()
-    );
-
-    return ctx.wizard.next();
-});
-
-const completeHandler = new Composer();
-completeHandler.action(KEYBOARD_DATA.OTHER.COMPLETE, (ctx) => {
-    console.log(ctx.wizard.state.job);
-    try {
-        const job = ctx.wizard.state.job;
-
-        console.log(job);
-
-        works = updateWorkById(works, work.id, work);
-        // conn.updateWorkIsCompleted(work.id, true);
-        // sendEmail(ctx);
-
-        ctx.answerCbQuery(
-            TEXT.INFO.COMPLETE_MSG_ALERT,
-            { show_alert: true }
-        );
-        ctx.deleteMessage();
-
-        return ctx.scene.leave();
-    } catch (error) {
-        return ctx.reply(TEXT.OTHER.ERROR);
-    }
-});
-
-const scene = new WizardScene(
-    SCENE_ID.COMPLETE_WORK_SCENE,
-    chooseProblemWithHandler,
-    chooseCauseHandler,
-    attachPhotoHandler,
-    completeHandler,
-);
-scene.enter((ctx) => {
-    return ctx.reply(
-        TEXT.KEYBOARD.CHOOSE_WHERE,
-        keyboard.getWhereKeyboard()
-    );
-});
-scene.use(handleBackBtn());
-scene.action(SCENE_ID.CHOOSE_WORK_SCENE, (ctx) => {
-    ctx.deleteMessage();
-    return ctx.scene.enter(SCENE_ID.CHOOSE_WORK_SCENE, ctx.wizard.state);
-});
-scene.action([...Object.values(KEYBOARD_DATA.CAUSE), ...Object.values(EQUIMPMENT_CATEGORY)], (ctx) => {
+const checkOrUncheckHandler = new Composer();
+checkOrUncheckHandler.action([...Object.values(KEYBOARD_DATA.CAUSE),
+...Object.values(EQUIMPMENT_CATEGORY), KEYBOARD_DATA.OTHER.CONTINUE_BTN], (ctx) => {
     const cbData = ctx.callbackQuery.data, cause = ctx.wizard.state.job.cause;
+
+    ctx.wizard.state.job.photos = [];
+    ctx.wizard.state.job.cause.push(cbData);
+    
+    if (cbData === KEYBOARD_DATA.OTHER.CONTINUE_BTN) {
+        ctx.answerCbQuery();
+        ctx.editMessageText(
+            TEXT.KEYBOARD.ATTACH_PHOTO,
+            keyboard.getBackKeyboard()
+        );
+
+        return ctx.wizard.next();
+    }
 
     let keyboardArr = ctx.session.causeKeyboardArr;
     keyboardArr = keyboardArr.map((btnArr) => {
@@ -137,8 +95,51 @@ scene.action([...Object.values(KEYBOARD_DATA.CAUSE), ...Object.values(EQUIMPMENT
             ...Markup.inlineKeyboard(keyboardArr)
         }
     );
+});
 
-    return ctx.wizard.next();
+const completeHandler = new Composer();
+completeHandler.action(KEYBOARD_DATA.OTHER.COMPLETE, (ctx) => {
+    ctx.wizard.state.job.cause.push(ctx.callbackQuery.data);
+    ctx.wizard.state.job.photos = [];
+    console.log(ctx.wizard.state.job);
+    try {
+        const job = ctx.wizard.state.job;
+
+        console.log(job);
+
+        works = updateWorkById(works, work.id, work);
+        // conn.updateWorkIsCompleted(work.id, true);
+        // sendEmail(ctx);
+
+        ctx.answerCbQuery(
+            TEXT.INFO.COMPLETE_MSG_ALERT,
+            { show_alert: true }
+        );
+        ctx.deleteMessage();
+
+        return ctx.scene.leave();
+    } catch (error) {
+        return ctx.reply(TEXT.OTHER.ERROR);
+    }
+});
+
+const scene = new WizardScene(
+    SCENE_ID.COMPLETE_WORK_SCENE,
+    chooseProblemWithHandler,
+    chooseCauseHandler,
+    checkOrUncheckHandler,
+    completeHandler,
+);
+scene.enter((ctx) => {
+    return ctx.reply(
+        TEXT.KEYBOARD.CHOOSE_WHERE,
+        keyboard.getWhereKeyboard()
+    );
+});
+scene.use(handleBackBtn());
+scene.action(SCENE_ID.CHOOSE_WORK_SCENE, (ctx) => {
+    ctx.deleteMessage();
+    return ctx.scene.enter(SCENE_ID.CHOOSE_WORK_SCENE, ctx.wizard.state);
 });
 
 module.exports = scene;
