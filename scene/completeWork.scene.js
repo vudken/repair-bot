@@ -1,7 +1,9 @@
 'use strict';
 
 require('dotenv').config();
-const { Scenes: { WizardScene }, Composer } = require('telegraf');
+
+const { Scenes: { WizardScene },
+    Composer } = require('telegraf');
 const { Markup } = require('telegraf');
 const emoji = require('node-emoji');
 const EQUIMPMENT_CATEGORY = require('../constant/EquipmentCategoryEnum');

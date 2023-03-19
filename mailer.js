@@ -1,8 +1,9 @@
 'use strict';
 
 require('dotenv').config();
+
 const nodemailer = require('nodemailer');
-const { logger, logToFile } = require('./log/logger.js');
+const { logger } = require('./log/logger.js');
 
 const transporter = nodemailer.createTransport({
     service: "gmail",

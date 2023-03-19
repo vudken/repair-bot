@@ -1,17 +1,15 @@
 'use strict';
 
 require('dotenv').config();
-const { Scenes: { WizardScene }, Composer } = require('telegraf');
-const { Markup } = require('telegraf');
-const emoji = require('node-emoji');
-const EQUIMPMENT_CATEGORY = require('../constant/EquipmentCategoryEnum');
+
+const {
+    Scenes: { WizardScene },
+    Composer } = require('telegraf');
 const KEYBOARD_DATA = require('../constant/KeyboardDataEnum');
 const SCENE_ID = require('../constant/SceneIdEnum');
 const TEXT = require('../constant/TextEnum');
 const keyboard = require('../keyboard');
 const conn = require('../db/conn');
-const emojiStrip = require('emoji-strip');
-const { handleBackBtn, isContainsEmoji } = require('../service/util');
 const sendEmail = require('../mailer');
 const { enterSceneHandler } = require('../service/util');
 const { logger } = require('../log/logger');
@@ -24,22 +22,21 @@ updateHandler.action(KEYBOARD_DATA.OTHER.COMPLETE, async (ctx) => {
 
         ctx.wizard.state.work.fixed.push(job);
 
-        // conn.updateWork(work.id, {
-        //     'photo': JSON.stringify(job.photos),
-        //     'is_completed': true
-        // });
+        conn.updateWork(work.id, {
+            'photo': JSON.stringify(job.photos),
+            'is_completed': true
+        });
 
         await sendEmail(work);
 
-        ctx.answerCbQuery(
-            TEXT.INFO.COMPLETE_MSG_ALERT,
-            { show_alert: true }
-        );
+        ctx.answerCbQuery(TEXT.INFO.COMPLETE_MSG_ALERT, { show_alert: true });
         ctx.deleteMessage();
+
         return ctx.scene.leave();
     } catch (err) {
         logger.error(err);
         ctx.reply(TEXT.OTHER.ERROR);
+
         return ctx.scene.leave();
     }
 });

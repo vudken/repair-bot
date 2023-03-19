@@ -1,6 +1,7 @@
 'use strict';
 
 require('dotenv').config();
+
 const { Scenes: { WizardScene } } = require('telegraf');
 const ТЕХТ = require('../constant/TextEnum');
 const SCENE_ID = require('../constant/SceneIdEnum');

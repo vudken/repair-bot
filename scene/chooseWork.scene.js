@@ -1,6 +1,8 @@
 'use strict';
 
-const { Scenes: { WizardScene }, Composer } = require('telegraf');
+const {
+    Scenes: { WizardScene },
+    Composer } = require('telegraf');
 const SCENE_ID = require('../constant/SceneIdEnum');
 const TEXT = require('../constant/TextEnum');
 const keyboard = require('../keyboard');
@@ -62,16 +64,6 @@ scene.enter(async (ctx) => {
         TEXT.KEYBOARD.CHOOSE_ADDRESS,
         keyboard.getWorkKeyboard(works)
     );
-
-    // ctx.reply(
-    //     TEXT.KEYBOARD.CHOOSE_ADDRESS,
-    //     keyboard.getWorkKeyboard(works)
-    // );
 });
-
-// scene.action(SCENE_ID.COMPLETE_WORK_SCENE, (ctx) => {
-//     ctx.scene.leave();
-//     return ctx.scene.enter(SCENE_ID.COMPLETE_WORK_SCENE, ctx.wizard.state);
-// });
 
 module.exports = scene;

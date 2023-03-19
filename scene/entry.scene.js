@@ -1,6 +1,7 @@
 'use strict';
 
 require('dotenv').config();
+
 const { Scenes: { WizardScene } } = require('telegraf');
 const ROLE = require('../constant/RoleEnum');
 const SCENE_ID = require('../constant/SceneIdEnum');

@@ -1,6 +1,7 @@
 'use strict';
 
 require('dotenv').config();
+
 const env = process.env;
 const user = {
     0: { name: 'Test user', chatId: parseInt(env.TEST_USER_ID) },
