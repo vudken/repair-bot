@@ -74,7 +74,7 @@ const getCheckMark = () => {
     return emoji.get('white_check_mark');
 };
 
-const isContainEmoji = (str) => {
+const isContainsEmoji = (str) => {
     return (new RegExp('\\p{Emoji}', 'gu').test(str)) ? true : false;
 };
 
@@ -82,7 +82,7 @@ const checkAndUncheck = (keyboardArr, cbData) => {
     return keyboardArr.map((btnArr) => {
         const btn = btnArr[0];
 
-        if (btn.callback_data === cbData && !isContainEmoji(btn.text)) {
+        if (btn.callback_data === cbData && !isContainsEmoji(btn.text)) {
             [{ ...btn, text: `${btn.text}  ${getCheckMark()}` }];
 
         } else {
@@ -114,7 +114,7 @@ module.exports = {
     getWorkDataById,
     updateWorkById,
     getCheckMark,
-    isContainEmoji,
+    isContainsEmoji,
     checkAndUncheck,
     enterSceneHandler
 };

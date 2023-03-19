@@ -195,6 +195,13 @@ const getBackKeyboard = () => {
     };
 };
 
+const getAttachmentKeyboard = () => {
+    return {
+        parse_mode: 'HTML',
+        ...Markup.inlineKeyboard([[Markup.button.callback(TEXT.BTN.BACK_BTN, SCENE_ID.COMPLETE_WORK_SCENE)]])
+    };
+};
+
 const getConfirmationKeyboard = () => {
     return {
         parse_mode: 'HTML',
@@ -223,6 +230,7 @@ module.exports = {
     getWhereKeyboard,
     getProblemWithKeyboard,
     getCauseKeyboardArr,
+    getAttachmentKeyboard,
     getConfirmationKeyboard,
     getBackKeyboard,
     getPhotoWarningKeyboard
