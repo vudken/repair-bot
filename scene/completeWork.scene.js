@@ -18,7 +18,7 @@ const { handleBackBtn,
 
 const chooseProblemWithHandler = new Composer();
 chooseProblemWithHandler.action(Object.values(KEYBOARD_DATA.WHERE), (ctx) => {
-    ctx.wizard.state.job = {
+    ctx.wizard.state.place = {
         where: ctx.callbackQuery.data,
         problemWith: null,
         cause: []
@@ -36,10 +36,10 @@ chooseProblemWithHandler.action(Object.values(KEYBOARD_DATA.WHERE), (ctx) => {
 const chooseCauseHandler = new Composer();
 chooseCauseHandler.action(Object.values(KEYBOARD_DATA.PROBLEM_WITH), (ctx) => {
     const problemWith = ctx.callbackQuery.data;
-    const keyboardArr = keyboard.getCauseKeyboardArr(ctx.wizard.state.job.where, problemWith);
+    const keyboardArr = keyboard.getCauseKeyboardArr(ctx.wizard.state.place.where, problemWith);
 
     ctx.session.causeKeyboardArr = keyboardArr;
-    ctx.wizard.state.job.problemWith = problemWith;
+    ctx.wizard.state.place.problemWith = problemWith;
     ctx.answerCbQuery();
     ctx.editMessageText(
         TEXT.KEYBOARD.CHOOSE_CAUSE,
@@ -55,15 +55,16 @@ chooseCauseHandler.action(Object.values(KEYBOARD_DATA.PROBLEM_WITH), (ctx) => {
 const checkOrUncheckHandler = new Composer();
 checkOrUncheckHandler.action([...Object.values(KEYBOARD_DATA.CAUSE),
 ...Object.values(EQUIMPMENT_CATEGORY), KEYBOARD_DATA.OTHER.CONTINUE_BTN], (ctx) => {
-    const cbData = ctx.callbackQuery.data, cause = ctx.wizard.state.job.cause;
+    const cbData = ctx.callbackQuery.data, cause = ctx.wizard.state.place.cause;
 
-    ctx.wizard.state.job.photos = [];
+    ctx.wizard.state.place.photos = [];
 
     if (cbData === KEYBOARD_DATA.OTHER.CONTINUE_BTN && cause.length === 0) {
         return ctx.answerCbQuery(TEXT.INFO.CAUSE_WARNING, { show_alert: true });
     }
 
     if (cbData === KEYBOARD_DATA.OTHER.CONTINUE_BTN && cause.length > 0) {
+        ctx.session.work.places.push(ctx.wizard.state.place);
         ctx.scene.leave();
         return ctx.scene.enter(SCENE_ID.SEND_WORK_SCENE, ctx.wizard.state);
     }
@@ -78,7 +79,7 @@ checkOrUncheckHandler.action([...Object.values(KEYBOARD_DATA.CAUSE),
         }
 
         if (btn.callback_data === cbData && isContainsEmoji(btn.text)) {
-            ctx.wizard.state.job.cause = cause.filter(el => el != cbData);
+            ctx.wizard.state.place.cause = cause.filter(el => el != cbData);
             return [{ ...btn, text: `${emojiStrip(btn.text).trim()}` }];
         }
 
@@ -104,6 +105,7 @@ const scene = new WizardScene(
 );
 scene.use(handleBackBtn());
 scene.enter((ctx) => {
+    ctx.session.works = [];
     enterSceneHandler(ctx,
         TEXT.KEYBOARD.CHOOSE_WHERE,
         keyboard.getWhereKeyboard()

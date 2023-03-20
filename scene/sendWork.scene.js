@@ -17,15 +17,12 @@ const { logger } = require('../log/logger');
 const updateHandler = new Composer();
 updateHandler.action(KEYBOARD_DATA.OTHER.COMPLETE, async (ctx) => {
     try {
-        const job = ctx.wizard.state.job;
-        const work = ctx.wizard.state.work;
+        const work = ctx.session.work;
 
-        ctx.wizard.state.work.fixed.push(job);
-
-        conn.updateWork(work.id, {
-            'photo': JSON.stringify(job.photos),
-            'is_completed': true
-        });
+        // conn.updateWork(work.id, {
+        //     'photo': JSON.stringify(work.place.photos),
+        //     'is_completed': true
+        // });
 
         await sendEmail(work);
 

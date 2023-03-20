@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const nodemailer = require('nodemailer');
 const { logger } = require('./log/logger.js');
+const { getEmailText } = require('./service/util.js');
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -20,26 +21,23 @@ const sendMail = async (mailDetails, callback) => {
     try {
         const info = await transporter.sendMail(mailDetails);
         callback(info);
-    } catch (error) {
-        logger.error(error);
+    } catch (err) {
+        logger.error(err);
     }
 };
 
+let photos;
 const sendEmail = async (work) => {
+    console.log(work);
     sendMail({
         from: {
             name: 'Ремонтные работы',
             address: 'rabotniklep@gmail.com'
         },
         to: 'tamelepenergy@gmail.com',
-        subject: `(Ремонтная работа)`,
-        text: `Это письмо сгенерировано автоматически в тестовом режиме и отправлено через телеграмм-бот.\n
-        Произведена ремонтная работа:
-        Адрес: ${work.аddress}
-        Где: ${work.where}
-        Что: ${work.problemWith}
-        Заменено: ${work.cause}`,
-        attachments: work.photos
+        subject: `${work.address} (Ремонтная работа)`,
+        text: getEmailText(work.places),
+        attachments: work.places.length > 1 ? photos = work.places.map(place => place.photos).flat() : work.places[0].photos
     }, info => {
         logger.debug(`Еmail has been sent successfully to ${info.envelope.to} (msg id: ${info.messageId})`);
     });

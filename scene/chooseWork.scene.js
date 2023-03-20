@@ -19,15 +19,11 @@ optionsHandler.action(/workId\d+/, async (ctx) => {
         address = getWorkDataById(works, id, 'address'),
         description = getWorkDataById(works, id, 'description');
 
-    ctx.wizard.state.work = {
+    ctx.session.work = {
         id: id,
         address: address,
         description: description,
-        fixed: [{
-            where: null,
-            problemWith: null,
-            cause: []
-        }],
+        places: [],
     };
 
     ctx.answerCbQuery();
@@ -43,7 +39,7 @@ const descriptionHandler = new Composer();
 descriptionHandler.action(/workId\d+/, async (ctx) => {
     ctx.answerCbQuery();
     ctx.editMessageText(
-        `<b>Адрес:</b> <i>${ctx.wizard.state.work.address}</i>\n\n<b>Доп. инфо:</b> <i>${ctx.wizard.state.work.description}</i>`,
+        `<b>Адрес:</b> <i>${ctx.session.work.address}</i>\n\n<b>Доп. инфо:</b> <i>${ctx.session.work.description}</i>`,
         keyboard.getBackKeyboard(),
     );
 

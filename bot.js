@@ -34,8 +34,8 @@ bot.on(['sticker', 'file', 'text'], (ctx) => ctx.deleteMessage());
 bot.on(['photo', 'media_group'], async (ctx) => {
     const mediaGroup = ctx.mediaGroup;
 
-    if (ctx.wizard && ctx.wizard.state.job.cause.length > 0) {
-        const msg = ctx.update.message, photos = ctx.wizard.state.job.photos;
+    if (ctx.wizard && ctx.wizard.state.place.cause.length > 0) {
+        const msg = ctx.update.message, photos = ctx.wizard.state.place.photos;
 
         if (mediaGroup) {
             for (const msg of mediaGroup) {
@@ -46,7 +46,7 @@ bot.on(['photo', 'media_group'], async (ctx) => {
         }
 
         return await ctx.reply(
-            `<b>Адрес:</b> <i>${ctx.wizard.state.work.address}</i>\n\n<b>Кол-во добавленных фото:</b> <i>${photos.length}</i>\n\n<b>Можете прикрепить ещё фото. Если все фото добавлены, можете завершить работу или добавить ещё место выполнения работы (например, чердак, подвал или т.п.)</b>`,
+            `<b>Адрес:</b> <i>${ctx.session.work.address}</i>\n\n<b>Кол-во добавленных фото:</b> <i>${photos.length}</i>\n\n<b>Можете прикрепить ещё фото. Если все фото добавлены, можете завершить работу или добавить ещё место выполнения работы (например, чердак, подвал или т.п.)</b>`,
             keyboard.getConfirmationKeyboard()
         );
     } else {
