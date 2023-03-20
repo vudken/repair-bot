@@ -72,7 +72,7 @@ const getEmailText = (places) => {
     const title = `Это письмо сгенерировано автоматически в тестовом режиме и отправлено через телеграмм-бот\n\n`;
 
     let cause;
-    let text;
+    let text = '';
     places.forEach(place => {
         text += `\nГде: ${getTxtByCbData(place.where)}\nЧто: ${getTxtByCbData(place.problemWith)}\nЗаменено: ${place.cause.length > 1 ? cause = place.cause.map(el => getTxtByCbData(el)).join(' и ') : getTxtByCbData(place.cause[0])}\n`;
     });

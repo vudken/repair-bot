@@ -27,7 +27,7 @@ const sendMail = async (mailDetails, callback) => {
 };
 
 let photos;
-const sendEmail = async (work) => {
+const sendEmail = async (work, photos) => {
     console.log(work);
     sendMail({
         from: {
@@ -37,7 +37,7 @@ const sendEmail = async (work) => {
         to: 'tamelepenergy@gmail.com',
         subject: `${work.address} (Ремонтная работа)`,
         text: getEmailText(work.places),
-        attachments: work.places.length > 1 ? photos = work.places.map(place => place.photos).flat() : work.places[0].photos
+        attachments: photos
     }, info => {
         logger.debug(`Еmail has been sent successfully to ${info.envelope.to} (msg id: ${info.messageId})`);
     });

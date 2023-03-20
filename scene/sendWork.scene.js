@@ -18,13 +18,16 @@ const updateHandler = new Composer();
 updateHandler.action(KEYBOARD_DATA.OTHER.COMPLETE, async (ctx) => {
     try {
         const work = ctx.session.work;
+        const photos = work.places.length > 1
+            ? work.places.map(place => place.photos).flat()
+            : work.places[0].photos;
 
-        // conn.updateWork(work.id, {
-        //     'photo': JSON.stringify(work.place.photos),
-        //     'is_completed': true
-        // });
+        conn.updateWork(work.id, {
+            'photo': JSON.stringify(photos),
+            'is_completed': true
+        });
 
-        await sendEmail(work);
+        await sendEmail(work, photos);
 
         ctx.answerCbQuery(TEXT.INFO.COMPLETE_MSG_ALERT, { show_alert: true });
         ctx.deleteMessage();
