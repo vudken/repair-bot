@@ -125,7 +125,7 @@ const getTxtByCbData = (cbData) => {
 };
 
 const getEmailText = (places) => {
-    const title = `Это письмо сгенерировано автоматически в тестовом режиме и отправлено через телеграмм-бот\n`;
+    const title = `Это письмо сгенерировано автоматически и отправлено через телеграмм-бот\n`;
 
     let cause;
     let text = '';
