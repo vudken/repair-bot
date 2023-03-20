@@ -5,7 +5,7 @@ const EQUIMPMENT_CATEGORY = require('./constant/EquipmentCategoryEnum');
 const KEYBOARD_DATA = require('./constant/KeyboardDataEnum');
 const SCENE_ID = require('./constant/SceneIdEnum');
 const TEXT = require('./constant/TextEnum');
-const { getItemsFromAssemblyByCategory  } = require('./service/util');
+const { getItemsFromAssemblyByCategory } = require('./service/util');
 
 const createKeyboard = (dataArr) => {
     let keyboard = [];
@@ -32,14 +32,13 @@ const getEmployeeKeyboard = (employees) => {
     return createKeyboard(employees);
 };
 
-const getWorkKeyboard = (work) => {
-    work = work.filter(el => el.isCompleted === 0);
-    work = work.map(el => el = {
-        btnTxt: `${el.address}`,
-        cbData: `workId${el.id}`
-    });
-
-    return createKeyboard(work);
+const getWorkKeyboard = (works) => {
+    return createKeyboard(works.map((el) =>
+        el = {
+            btnTxt: `${el.address}`,
+            cbData: `workId${el.id}`
+        }
+    ));
 };
 
 const getAddressKeyboard = (cbData) => {

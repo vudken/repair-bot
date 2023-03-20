@@ -10,6 +10,7 @@ const conn = require('../db/conn');
 const { handleBackBtn,
     getWorkDataById,
     enterSceneHandler } = require('../service/util');
+const emoji = require('node-emoji');
 
 const optionsHandler = new Composer();
 optionsHandler.action(/workId\d+/, async (ctx) => {
@@ -53,13 +54,17 @@ const scene = new WizardScene(
 );
 scene.use(handleBackBtn());
 scene.enter(async (ctx) => {
-    const works = await conn.getAllWork();
+    let works = await conn.getAllWork();
+    works = works.filter(work => work.isCompleted === 0);
+
     ctx.session.works = works;
 
-    enterSceneHandler(ctx,
-        TEXT.KEYBOARD.CHOOSE_ADDRESS,
-        keyboard.getWorkKeyboard(works)
-    );
+    works.length > 0
+        ? enterSceneHandler(ctx,
+            TEXT.KEYBOARD.CHOOSE_ADDRESS,
+            keyboard.getWorkKeyboard(works)
+        )
+        : ctx.reply(`${emoji.get('🔥')} На данный момент все ремонтные работы выполнены!`);
 });
 
 module.exports = scene;

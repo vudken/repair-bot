@@ -68,30 +68,6 @@ const isContainsEmoji = (str) => {
     return (new RegExp('\\p{Emoji}', 'gu').test(str)) ? true : false;
 };
 
-const getEmailText = (places) => {
-    const title = `Это письмо сгенерировано автоматически в тестовом режиме и отправлено через телеграмм-бот\n\n`;
-
-    let cause;
-    let text = '';
-    places.forEach(place => {
-        text += `\nГде: ${getTxtByCbData(place.where)}\nЧто: ${getTxtByCbData(place.problemWith)}\nЗаменено: ${place.cause.length > 1 ? cause = place.cause.map(el => getTxtByCbData(el)).join(' и ') : getTxtByCbData(place.cause[0])}\n`;
-    });
-
-    return title + text;
-};
-
-const enterSceneHandler = (ctx, txt, keyboard) => {
-    return (ctx.update.callback_query && ctx.update.callback_query.data != KEYBOARD_DATA.OTHER.BACK_BTN)
-        ? ctx.editMessageText(
-            txt,
-            keyboard
-        )
-        : ctx.reply(
-            txt,
-            keyboard
-        );
-};
-
 const getTxtByCbData = (cbData) => {
     let txt;
     switch (cbData) {
@@ -148,6 +124,30 @@ const getTxtByCbData = (cbData) => {
     return txt;
 };
 
+const getEmailText = (places) => {
+    const title = `Это письмо сгенерировано автоматически в тестовом режиме и отправлено через телеграмм-бот\n`;
+
+    let cause;
+    let text = '';
+    places.forEach(place => {
+        text += `\nГде: ${getTxtByCbData(place.where)}\nЧто: ${getTxtByCbData(place.problemWith)}\nЗаменено: ${place.cause.length > 1 ? cause = place.cause.map(el => getTxtByCbData(el)).join(' и ') : getTxtByCbData(place.cause[0])}\n`;
+    });
+
+    return title + text;
+};
+
+const enterSceneHandler = (ctx, txt, keyboard) => {
+    return (ctx.update.callback_query && ctx.update.callback_query.data != KEYBOARD_DATA.OTHER.BACK_BTN)
+        ? ctx.editMessageText(
+            txt,
+            keyboard
+        )
+        : ctx.reply(
+            txt,
+            keyboard
+        );
+};
+
 module.exports = {
     isAssemblyEmpty,
     correctModelName,
@@ -159,5 +159,4 @@ module.exports = {
     isContainsEmoji,
     getEmailText,
     enterSceneHandler,
-    getTxtByCbData
 };
