@@ -33,8 +33,7 @@ bot.action(KEYBOARD_DATA.OTHER.CLOSE_MENU, (ctx) => {
 bot.on(['sticker', 'file', 'text'], (ctx) => ctx.deleteMessage());
 bot.on(['photo', 'media_group'], async (ctx) => {
     const mediaGroup = ctx.mediaGroup;
-
-    if (ctx.wizard && ctx.wizard.state.place.cause.length > 0) {
+    if (ctx.wizard && ctx.scene.current.id === SCENE_ID.SEND_WORK_SCENE) {
         const msg = ctx.update.message, photos = ctx.wizard.state.place.photos;
 
         if (mediaGroup) {

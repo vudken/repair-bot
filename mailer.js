@@ -28,7 +28,6 @@ const sendMail = async (mailDetails, callback) => {
 
 let photos;
 const sendEmail = async (work, photos) => {
-    console.log(work);
     sendMail({
         from: {
             name: 'Ремонтные работы',
