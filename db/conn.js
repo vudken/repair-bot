@@ -7,7 +7,7 @@ const parseResFromDB = (res) => {
 
 const getAllWork = async () => {
     const work = await db(table)
-        .select('id', 'name', 'address', 'description', { 'isCompleted': 'is_completed' });
+        .select('id', 'address', 'description', 'material', { 'isCompleted': 'is_completed' });
     return parseResFromDB(work);
 };
 

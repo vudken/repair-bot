@@ -18,12 +18,14 @@ optionsHandler.action(/workId\d+/, async (ctx) => {
         works = ctx.session.works,
         id = cbData.match(/\d+/g).join(''),
         address = getWorkDataById(works, id, 'address'),
-        description = getWorkDataById(works, id, 'description');
+        description = getWorkDataById(works, id, 'description'),
+        material = getWorkDataById(works, id, 'material');
 
     ctx.session.work = {
         id: id,
         address: address,
         description: description,
+        material: material,
         places: [],
     };
 
@@ -40,7 +42,7 @@ const descriptionHandler = new Composer();
 descriptionHandler.action(/workId\d+/, async (ctx) => {
     ctx.answerCbQuery();
     ctx.editMessageText(
-        `<b>Адрес:</b> <i>${ctx.session.work.address}</i>\n\n<b>Доп. инфо:</b> <i>${ctx.session.work.description}</i>`,
+        `<b>Адрес:</b> <i>${ctx.session.work.address}</i>\n\n<b>Доп. инфо:</b> <i>${ctx.session.work.description}</i>\n\n<b>Материал:</b> <i>${ctx.session.work.material}</i>`,
         keyboard.getBackKeyboard(),
     );
 
