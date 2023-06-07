@@ -21,7 +21,7 @@ const user = {
 
     getAllChatIds: function () {
         return Object.values(this)
-            .filter(val => typeof val != "function")
+            .filter(val => typeof val != 'function')
             .map(val => val.chatId);
     },
 };

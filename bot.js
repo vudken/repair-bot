@@ -64,7 +64,7 @@ bot.on(['photo', 'media_group'], async (ctx) => {
     }
 });
 bot.telegram
-    .callApi("getUpdates", { offset: -1 })
+    .callApi('getUpdates', { offset: -1 })
     .then((updates) => updates.length && updates[0].update_id + 1)
     .then((offset) => {
         if (offset) return bot.telegram.callApi('getUpdates', { offset });

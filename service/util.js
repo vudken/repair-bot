@@ -1,7 +1,7 @@
 'use strict';
 
 const { Composer } = require('telegraf');
-const TEXT = require("../constant/TextEnum");
+const TEXT = require('../constant/TextEnum');
 const KEYBOARD_DATA = require('../constant/KeyboardDataEnum');
 
 const isAssemblyEmpty = (assembly) => {
