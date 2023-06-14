@@ -35,7 +35,7 @@ updateHandler.action(KEYBOARD_DATA.OTHER.COMPLETE, async (ctx) => {
 
         ctx.answerCbQuery(TEXT.INFO.COMPLETE_MSG_ALERT, { show_alert: true });
         ctx.deleteMessage();
-
+        // setTimeout(() => ctx.scene.enter(SCENE_ID.CHOOSE_WORK_SCENE), 1000);
         return ctx.scene.leave();
     } catch (err) {
         logger.error(err);
