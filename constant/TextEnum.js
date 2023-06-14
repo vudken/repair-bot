@@ -49,9 +49,9 @@ const EQUIMPMENT = Object.freeze({
 });
 
 const BOT = Object.freeze({
-	START: 'Bot has been started',
-	STOP: 'Bot has been stopped',
-	RELAUNCH: 'Bot has been relaunched',
+	START: 'Repair Bot has been started',
+	STOP: 'Repair Bot has been stopped',
+	RELAUNCH: 'Repair Bot has been relaunched',
 });
 
 const BTN = Object.freeze({
