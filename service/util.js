@@ -56,7 +56,7 @@ const handleBackBtn = () => {
 };
 
 const getWorkById = (works, id) => {
-    return works.find((work) => work.id === parseInt(id));
+    return works.find((work) => work.id === id);
 };
 
 const getWorkDataById = (works, id, property) => {
@@ -159,4 +159,5 @@ module.exports = {
     isContainsEmoji,
     getEmailText,
     enterSceneHandler,
+    getWorkById
 };

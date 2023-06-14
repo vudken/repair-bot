@@ -1,0 +1,20 @@
+{
+    "id": "cf0ccc53-98fa-66f9-c0a7-6481d3ca3281",
+    "address": "Address 5",
+    "description": "congue massa",
+    "material": "raw",
+    "places": [
+        {
+            "where": "basement",
+            "problemWith": "heating",
+            "cause": [
+                "ventil"
+            ],
+            "photos": [
+                {
+                    "path": "https://api.telegram.org/file/bot5963229583:AAEX3GQeuBR6PlFTT2CgLLJ39ofR6e47tyQ/photos/file_70.jpg"
+                }
+            ]
+        }
+    ]
+}

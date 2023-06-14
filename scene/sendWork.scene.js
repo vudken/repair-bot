@@ -13,6 +13,8 @@ const conn = require('../db/conn');
 const sendEmail = require('../mailer');
 const { enterSceneHandler } = require('../service/util');
 const { logger } = require('../log/logger');
+const { default: axios } = require('axios');
+const { updateDataInCrm } = require('../api/suiteCrm');
 
 const updateHandler = new Composer();
 updateHandler.action(KEYBOARD_DATA.OTHER.COMPLETE, async (ctx) => {
@@ -22,10 +24,12 @@ updateHandler.action(KEYBOARD_DATA.OTHER.COMPLETE, async (ctx) => {
             ? work.places.map(place => place.photos).flat()
             : work.places[0].photos;
 
-        conn.updateWork(work.id, {
-            'photo': JSON.stringify(photos),
-            'is_completed': true
-        });
+        updateDataInCrm(work);
+
+        // conn.updateWork(work.id, {
+        //     'photo': JSON.stringify(photos),
+        //     'is_completed': true
+        // });
 
         await sendEmail(work, photos);
 

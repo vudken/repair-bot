@@ -36,16 +36,16 @@ const getWorkKeyboard = (works) => {
     return createKeyboard(works.map((el) =>
         el = {
             btnTxt: `${el.address}`,
-            cbData: `workId${el.id}`
+            cbData: `${el.id}`
         }
     ));
 };
 
-const getAddressKeyboard = (cbData) => {
+const getAddressKeyboard = (id) => {
     return {
         parse_mode: 'HTML',
         ...Markup.inlineKeyboard([
-            [Markup.button.callback(TEXT.BTN.GET_DESCRIPTION, cbData)],
+            [Markup.button.callback(TEXT.BTN.GET_DESCRIPTION, id)],
             [Markup.button.callback(TEXT.BTN.COMPLETE_WORK, SCENE_ID.COMPLETE_WORK_SCENE)],
             [Markup.button.callback(TEXT.BTN.BACK_BTN, KEYBOARD_DATA.OTHER.BACK_BTN)],
         ])
