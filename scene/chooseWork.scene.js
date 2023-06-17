@@ -11,7 +11,7 @@ const { handleBackBtn,
     getWorkById } = require('../service/util');
 const emoji = require('node-emoji');
 const { fetchData } = require('../api/suiteCrm');
-const findCrmUserIdByChatId = require('../constant/EmployeeEnum');
+const { findCrmEmployeeIdByChatId } = require('../constant/EmployeeEnum');
 
 const regex = /\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/;
 
@@ -60,7 +60,7 @@ scene.enter(async (ctx) => {
 
     works = works.filter(work => work.status !== 'Completed'
         && work.deleted !== '1'
-        && work.assigned_user_id === findCrmUserIdByChatId(ctx.message.chat.id)
+        && work.assigned_user_id === findCrmEmployeeIdByChatId(ctx.message.chat.id)
     );
 
     ctx.session.works = works;

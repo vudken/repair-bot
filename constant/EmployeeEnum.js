@@ -68,9 +68,16 @@ const EMPLOYEE_ENUM = Object.freeze({
     },
 });
 
-const findCrmUserIdByChatId = (chatId) => {
+const findCrmEmployeeIdByChatId = (chatId) => {
     const crmId = Object.values(EMPLOYEE_ENUM).find(obj => obj.CHAT_ID == chatId);
     return crmId ? crmId.CRM_ID : null;
 };
 
-module.exports = findCrmUserIdByChatId;
+const isEmployeeExist = (chatId) => {
+    return Object.values(EMPLOYEE_ENUM).some(obj => parseInt(obj.CHAT_ID) === chatId);
+};
+
+module.exports = {
+    findCrmEmployeeIdByChatId,
+    isEmployeeExist
+};

@@ -18,7 +18,7 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 bot.use(session());
 bot.use(new Stage(require('./scene/scenes')).middleware());
 bot.use(mediaGroup());
-bot.start((ctx) => ctx.scene.enter(SCENE_ID.CHOOSE_WORK_SCENE));
+bot.start((ctx) => ctx.scene.enter(SCENE_ID.ENTRY_SCENE));
 bot.hears(['id', 'Id'], (ctx) => logger.info(`User's chat id is: ${ctx.message.chat.id}`));
 bot.action(KEYBOARD_DATA.OTHER.UNDERSTAND, (ctx) => ctx.deleteMessage());
 bot.action(/\w+_SCENE_ID/, (ctx) => {
