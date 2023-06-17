@@ -59,6 +59,7 @@ scene.enter(async (ctx) => {
     let works = await fetchData();
 
     works = works.filter(work => work.status !== 'Completed'
+        && work.status !== 'Deferred'
         && work.deleted !== '1'
         && work.assigned_user_id === findCrmEmployeeIdByChatId(ctx.message.chat.id)
     );

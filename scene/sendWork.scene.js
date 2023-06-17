@@ -9,11 +9,9 @@ const KEYBOARD_DATA = require('../constant/KeyboardDataEnum');
 const SCENE_ID = require('../constant/SceneIdEnum');
 const TEXT = require('../constant/TextEnum');
 const keyboard = require('../keyboard');
-const conn = require('../db/conn');
 const sendEmail = require('../mailer');
 const { enterSceneHandler } = require('../service/util');
 const { logger } = require('../log/logger');
-const { default: axios } = require('axios');
 const { updateDataInCrm } = require('../api/suiteCrm');
 
 const updateHandler = new Composer();

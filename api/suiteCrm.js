@@ -35,8 +35,6 @@ const updateDataInCrm = async (data) => {
             },
         );
 
-        console.log('RES DATA:')
-        console.log(res.data)
         return res.status.code;
     } catch (err) {
         logger.error(err.message);
