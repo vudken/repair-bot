@@ -61,16 +61,16 @@ const EMPLOYEE_ENUM = Object.freeze({
         CRM_ID: process.env.ZAHAROV_CRM_ID,
         CRM_USERNAME: process.env.ZAHAROV_CRM_USERNAME,
     },
-    MURAJEV: {
-        CHAT_ID: process.env.MURAJEV_CHAT_ID,
-        CRM_ID: process.env.MURAJEV_CRM_ID,
-        CRM_USERNAME: process.env.MURAJEV_CRM_USERNAME,
+    MURAVJEV: {
+        CHAT_ID: process.env.MURAVJEV_CHAT_ID,
+        CRM_ID: process.env.MURAVJEV_CRM_ID,
+        CRM_USERNAME: process.env.MURAVJEV_CRM_USERNAME,
     },
 });
 
-const findCrmUserById = (username) => {
-    const user = Object.values(data).find(obj => obj.username === username);
-    return user ? user.chatId : null; // Return null or handle the case when username is not found
+const findCrmUserIdByChatId = (chatId) => {
+    const crmId = Object.values(EMPLOYEE_ENUM).find(obj => obj.CHAT_ID == chatId);
+    return crmId ? crmId.CRM_ID : null;
 };
 
-module.exports = findCrmUserById;
+module.exports = findCrmUserIdByChatId;
