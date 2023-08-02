@@ -7,30 +7,57 @@ const { Telegraf,
     session,
 } = require('telegraf');
 const mediaGroup = require('telegraf-media-group');
-const { logger } = require('./log/logger');
+const { logger, logToFile } = require('./log/logger');
 const keyboard = require('./keyboard');
 const TEXT = require('./constant/TextEnum');
 const SCENE_ID = require('./constant/SceneIdEnum');
 const KEYBOARD_DATA = require('./constant/KeyboardDataEnum');
 const getPhotoPath = require('./service/getPhotoFromTg');
+const { updateDataInCrm } = require('./api/suiteCrm');
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
 bot.use(session());
 bot.use(new Stage(require('./scene/scenes')).middleware());
 bot.use(mediaGroup());
-bot.start((ctx) => ctx.scene.enter(SCENE_ID.ENTRY_SCENE));
 bot.hears(['id', 'Id'], (ctx) => logger.info(`User's chat id is: ${ctx.message.chat.id}`));
+bot.start((ctx) => ctx.scene.enter(SCENE_ID.ENTRY_SCENE));
 bot.action(KEYBOARD_DATA.OTHER.UNDERSTAND, (ctx) => ctx.deleteMessage());
 bot.action(/\w+_SCENE_ID/, (ctx) => {
     const state = ctx.wizard ? ctx.wizard.state : null;
     ctx.scene.leave();
     return ctx.scene.enter(ctx.update.callback_query.data, state);
 });
+bot.action(KEYBOARD_DATA.OTHER.ADD_COMMENT, (ctx) => {
+    ctx.deleteMessage();
+    ctx.reply(TEXT.OTHER.ADD_COMMENT, {
+        reply_markup: {
+            force_reply: true
+        }
+    });
+});
 bot.action(KEYBOARD_DATA.OTHER.CLOSE_MENU, (ctx) => {
     ctx.deleteMessage();
     return ctx.scene.leave();
 });
-bot.on(['sticker', 'file', 'text'], (ctx) => ctx.deleteMessage());
+bot.on(['sticker', 'file', 'text'], async (ctx) => {
+    const work = ctx.session.work;
+    if (ctx.update.message.reply_to_message && work) {
+        work.employeeComment = ctx.update.message.text;
+        try {
+            const res = await updateDataInCrm(work);
+            if (res == 200) {
+                // console.log(ctx);
+                ctx.reply(TEXT.INFO.COMMENT_ADDED);
+                // ctx.editMessageText('TEST');
+                return ctx.scene.enter(SCENE_ID.ENTRY_SCENE);
+            }
+        } catch (err) {
+            logToFile.error('Error in CRM update:', err);
+        }
+    } else {
+        return ctx.deleteMessage();
+    }
+});
 bot.on(['photo', 'media_group'], async (ctx) => {
     const mediaGroup = ctx.mediaGroup;
     if (ctx.wizard && ctx.scene.current.id === SCENE_ID.SEND_WORK_SCENE) {

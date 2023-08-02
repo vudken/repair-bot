@@ -26,7 +26,9 @@ optionsHandler.action(regex, async (ctx) => {
         address: work.address,
         description: work.description,
         material: work.material,
+        status: work.status,
         places: [],
+        employeeComment: work.employee_comment,
     };
 
     ctx.answerCbQuery();
@@ -61,7 +63,10 @@ scene.enter(async (ctx) => {
     works = works.filter(work => work.status !== 'Completed'
         && work.status !== 'Deferred'
         && work.deleted !== '1'
-        && work.assigned_user_id === findCrmEmployeeIdByChatId(ctx.message.chat.id)
+        && work.assigned_user_id === findCrmEmployeeIdByChatId(ctx.update.callback_query
+            ? ctx.update.callback_query.message.chat.id
+            : ctx.message.chat.id
+        )
     );
 
     ctx.session.works = works;

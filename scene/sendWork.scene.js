@@ -22,6 +22,7 @@ updateHandler.action(KEYBOARD_DATA.OTHER.COMPLETE, async (ctx) => {
             ? work.places.map(place => place.photos).flat()
             : work.places[0].photos;
 
+        work.status = 'Completed';    
         updateDataInCrm(work);
 
         // conn.updateWork(work.id, {
