@@ -23,6 +23,8 @@ const scene = new WizardScene(
         // }
         // console.log(isEmployeeExist(ctx.message.chat.id));
 
+        return ctx.scene.enter(SCENE_ID.CHOOSE_WORK_SCENE);
+        
         return isEmployeeExist(ctx.message.chat.id)
             ? ctx.scene.enter(SCENE_ID.CHOOSE_WORK_SCENE)
             : ctx.reply('У вас нету права доступа к этому чату');

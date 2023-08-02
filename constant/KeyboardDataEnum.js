@@ -8,6 +8,7 @@ const WHERE = Object.freeze({
 
 const PROBLEM_WITH = Object.freeze({
 	HOT_WATER: 'hotWater',
+	COLD_WATER: 'coldWater',
 	HEATING: 'heating',
 });
 
@@ -26,6 +27,7 @@ const CAUSE = Object.freeze({
 
 const OTHER = Object.freeze({
 	SAVE_TO_DB: 'saveToDB',
+	ADD_COMMENT: 'addComment',
 	BACK_BTN: `wizardBack`,
 	CONTINUE_BTN: `continue`,
 	COMPLETE: 'complete',

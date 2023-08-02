@@ -45,6 +45,7 @@ const getAddressKeyboard = (id) => {
     return {
         parse_mode: 'HTML',
         ...Markup.inlineKeyboard([
+            [Markup.button.callback(TEXT.BTN.ADD_COMMENT, KEYBOARD_DATA.OTHER.ADD_COMMENT)],
             [Markup.button.callback(TEXT.BTN.GET_DESCRIPTION, id)],
             [Markup.button.callback(TEXT.BTN.COMPLETE_WORK, SCENE_ID.COMPLETE_WORK_SCENE)],
             [Markup.button.callback(TEXT.BTN.BACK_BTN, KEYBOARD_DATA.OTHER.BACK_BTN)],
@@ -110,6 +111,7 @@ const getProblemWithKeyboard = () => {
         parse_mode: 'HTML',
         ...Markup.inlineKeyboard([
             [Markup.button.callback(TEXT.PROBLEM_WITH.HOT_WATER, KEYBOARD_DATA.PROBLEM_WITH.HOT_WATER)],
+            [Markup.button.callback(TEXT.PROBLEM_WITH.COLD_WATER, KEYBOARD_DATA.PROBLEM_WITH.COLD_WATER)],
             [Markup.button.callback(TEXT.PROBLEM_WITH.HEATING, KEYBOARD_DATA.PROBLEM_WITH.HEATING)],
             [Markup.button.callback(TEXT.BTN.BACK_BTN, KEYBOARD_DATA.OTHER.BACK_BTN)],
         ])
@@ -232,5 +234,5 @@ module.exports = {
     getAttachmentKeyboard,
     getConfirmationKeyboard,
     getBackKeyboard,
-    getPhotoWarningKeyboard
+    getPhotoWarningKeyboard,
 };
